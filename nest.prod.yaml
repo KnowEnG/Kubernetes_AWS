@@ -1,0 +1,218 @@
+# This template describes the KnowEnG production stack, 
+# which will mount in and operate on data from AWS EFS
+
+# Ingress rules assign a hostname/path to expose particular ports to the public internet
+# NOTE: "Host" header must match in order to be routed
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    # Force users to redirect from HTTP to HTTPS
+    ingress.kubernetes.io/ssl-redirect: "true"
+    ingress.kubernetes.io/force-ssl-redirect: "true"
+  name: nest-ingress
+spec:
+  tls:
+  - hosts:
+    - knowkubedev.knoweng.org
+    secretName: nest-tls-secret
+  rules:
+  - host: knowkubedev.knoweng.org
+    http:
+      # Define all paths served by our app to generate an nginx configuration
+      paths:
+      - path: /
+        backend:
+          serviceName: nest
+          servicePort: 80
+      - path: /static/
+        backend:
+          serviceName: nest
+          servicePort: 80
+      - path: /static/img/
+        backend:
+          serviceName: nest
+          servicePort: 80
+      - path: /static/node_modules/
+        backend:
+          serviceName: nest
+          servicePort: 80
+      - path: /static/dist/
+        backend:
+          serviceName: nest
+          servicePort: 80
+      - path: /static/css/knoweng/
+        backend:
+          serviceName: nest
+          servicePort: 80
+      - path: /static/css/mmbdb/
+        backend:
+          serviceName: nest
+          servicePort: 80
+      - path: /api/
+        backend:
+          serviceName: nest
+          servicePort: 80
+---
+# Services assign a static IP for our containers to expose particular ports to all Pods in the cluster
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    k8s-app: nest
+  # For ingress to work, this service name must 
+  # match the serviceName defined in the Ingress above
+  name: nest
+spec:
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+  # Selector determines which Pods should be used by this Service
+  selector:
+    k8s-app: nest
+---
+# Deployments (and ReplicaSets and ReplicationControllers) are responsible for keeping
+# your Pods running. Pods are containers that share 
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    k8s-app: nest
+  name: nest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: nest
+  # This template describes the Pods that will be created/managed by this Deployment
+  template:
+    metadata:
+      # For the service to work, this service name label must 
+      # match the selector defined in the Service above
+      labels:
+        k8s-app: nest
+    spec:
+      serviceAccountName: nest
+      
+      # Containers within the same Pod can access each others' ports on "localhost"
+      containers:
+        # NOTE: order here seems to somewhat determine startup order
+        # "postgres" must start before "flask"
+        # "redis" must start before "jobs"
+
+        # postgres_i
+      - image: postgres:9.6.2
+        name: postgres
+        env:
+        - name: PGDATA
+          value: "/data/db/postgres"
+        - name: POSTGRES_USER
+          value: "nest"
+        - name: POSTGRES_PASSWORD
+          value: "GARBAGESECRET"
+        volumeMounts:
+        - name: pgdata
+          mountPath: "/data/db"
+        ports:
+        - containerPort: 5432
+          protocol: TCP
+          
+        # nest_flask_i
+      - image: knowengdev/nest:flask
+        imagePullPolicy: Always
+        command: [ "bash" ]
+        args: [ "-c", "while ! nc -z localhost 5432; do echo 'Waiting for postgres...'; sleep 10s; done && sleep 20s && ./entrypoint.sh" ]
+        name: flask
+        ports:
+        - containerPort: 80
+          protocol: TCP
+        env:
+        - name: PROJECT_ENV
+          value: "knoweng"
+        - name: NEST_RUNLEVEL
+          value: "production"
+        - name: POSTGRES_HOST
+          value: "localhost"
+        - name: POSTGRES_PASSWORD
+          value: "GARBAGESECRET"
+        # FIXME: currently we still use knowredis
+        - name: REDIS_HOST
+          value: "localhost"
+        - name: AWS_REDIS_HOST
+          value: "knowredis.knoweng.org"
+        - name: AWS_REDIS_PASS
+          value: "KnowEnG"
+        - name: AWS_SHARED_MNT_PATH
+          value: "/userfiles"
+        volumeMounts:
+        - name: userfiles
+          mountPath: "/userfiles"
+
+        # redis_i
+      - image: redis:3.0.3
+        name: redis
+        ports:
+        - containerPort: 6379
+          protocol: TCP
+        volumeMounts:
+        - name: redisdata
+          mountPath: "/data"
+
+        # nest_jobs_i
+      - image: knowengdev/nest:jobs
+        imagePullPolicy: Always
+        command: [ "bash" ]
+        args: [ "-c", "while ! nc -z localhost 80; do echo 'Waiting for flask...'; sleep 10s; done && sleep 10s && python -m nest_py.knoweng.jobs.worker_app" ]
+        name: jobs
+        #securityContext:
+          #runAsUser: 0   # DOCKER_UID
+          #fsGroup: 999   # DOCKER_GID
+        env:
+        - name: PROJECT_ENV
+          value: "knoweng"
+        # FIXME: currently we still use knowredis
+        - name: REDIS_HOST
+          value: "localhost"
+        - name: POSTGRES_HOST
+          value: "localhost"
+        - name: NEST_RUNLEVEL
+          value: "production"
+        - name: AWS_SHARED_MNT_PATH
+          value: ""
+        - name: EXEC_MODE
+          value: "kubernetes"
+        - name: AWS_REDIS_HOST
+          value: "knowredis.knoweng.org"
+        - name: AWS_REDIS_PASS
+          value: "KnowEnG"
+        - name: SEED_DATABASE
+          value: "false"
+        - name: NODE_LABEL_NAME
+          value: "pipelines_jobs"                 
+        - name: NODE_LABEL_VALUE
+          value: "true"
+        volumeMounts:
+        - name: userfiles
+          mountPath: "/userfiles"
+        - name: networks
+          mountPath: "/networks"
+        - name: projectdata
+          mountPath: "/code_live/data/projects/knoweng/"
+      volumes:
+      - name: projectdata
+        emptyDir: {}
+      - name: userfiles
+        persistentVolumeClaim:
+          claimName: efs-userfiles
+      # TODO: How do we automate populating this PVC?
+      - name: networks
+        persistentVolumeClaim:
+          claimName: efs-networks
+      - name: pgdata
+        persistentVolumeClaim:
+          claimName: efs-postgres
+      - name: redisdata
+        persistentVolumeClaim:
+          claimName: efs-redis
+

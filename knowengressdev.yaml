@@ -1,0 +1,18 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: knowengressdev
+  namespace: default
+spec:
+  tls:
+  - hosts:
+    - dev.knoweng.org
+    secretName: knowdevssl-secret
+  rules:
+  - host: dev.knoweng.org
+    http:
+      paths:
+      - backend:
+          serviceName: support-nginx-ingress-default-backend
+          servicePort: 80
+        path: /

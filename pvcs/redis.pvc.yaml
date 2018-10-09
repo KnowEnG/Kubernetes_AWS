@@ -1,0 +1,16 @@
+---
+# WARNING: Deleting your claim will delete the data contained within the claim
+# Please save any critical data to the root of the EFS mount before deleting the PVC
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: efs-redis
+  annotations:
+    volume.beta.kubernetes.io/storage-class: "aws-efs"
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Mi
+---
