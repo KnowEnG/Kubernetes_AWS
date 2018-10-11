@@ -77,7 +77,7 @@
 
 12. Create the cluster:
 
-    Note: [masters will not boot on M5 and C5 instance types](https://github.com/kubernetes/kops/blob/master/docs/releases/1.8-NOTES.md#significant-changes) but may have changed
+    Note: [masters will not boot on M5 and C5 instance types](https://github.com/kubernetes/kops/blob/master/docs/releases/1.8-NOTES.md#significant-changes) but may have changed.
 
     <**Pramod!** Consider using Kubernetes version with flag: `--kubernetes-version` and consider using `--vpc: string Set to use a shared VPC` and [many other KOPS flags](https://github.com/kubernetes/kops/blob/master/docs/cli/kops_create_cluster.md) for helm & cfn setup>
 
@@ -140,6 +140,8 @@
         kops.k8s.io/instancegroup: pipes2
         pipelines_jobs: "true"
       role: Node
+      taints:
+      - dedicated=pipelines_jobs:NoSchedule
     </pre>
 
 14. Provide KOPS with IAM permissions to be deployed to API server for Auto-scaling:
@@ -347,7 +349,7 @@ Make sure the efs is detached from all the security groups and make sure efs doe
 
 Also the new security group"knowdevweb" opening up web ports to "node" should be de-tached from node and deleted.
 
-Also, clean the resources associated with Dummy efs-access instance (see efs docs above)
+Also, clean the resources associated with Dummy efs-access instance (see efs docs above).
 
 `helm delete support --purge`
 
@@ -357,9 +359,9 @@ Also, clean the resources associated with Dummy efs-access instance (see efs doc
 
 `kops delete cluster $NAME --yes`
 
-Note: This may take a while. Verify via Console/CLI that the KnowDev master(s), node(s), pipes1(s), and pipes2(s) are terminated
+Note: This may take a while. Verify via Console/CLI that the KnowDev master(s), node(s), pipes1(s), and pipes2(s) are terminated.
 
-Finally, remove A record for "dev.knoweng.org" in the IPAM manager, so that UIUC owned domain doesn't point to an arbitrary machine
+Finally, remove A record for "dev.knoweng.org" in the IPAM manager, so that UIUC owned domain doesn't point to an arbitrary machine.
 
 
 ## Using Private Docker Images?
