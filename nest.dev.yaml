@@ -146,6 +146,22 @@ spec:
           value: "KnowEnG"
         - name: AWS_SHARED_MNT_PATH
           value: "/userfiles"
+        # To activate CILOGON:
+        #   1. Change CILOGON_ENABLED value to "True'
+        #   2. Add CILOGON_CLIENT_ID value
+        #   3. Add CILOGON_CLIENT_SECRET value
+        #   4. Update CILOGON_REDIRECT_URI value (if necessary)
+        #      These values should work:
+        #      For dev: "https://dev.knoweng.org/static/index.html"
+        #      For prod: "https://platform.knoweng.org/static/index.html"
+        - name: CILOGON_ENABLED
+          value: "False"
+        - name: CILOGON_CLIENT_ID
+          value: "**********"
+        - name: CILOGON_CLIENT_SECRET
+          value: "**********"
+        - name: CILOGON_REDIRECT_URI
+          value: "https://dev.knoweng.org/static/index.html"
         volumeMounts:
         - name: userfiles
           mountPath: "/userfiles"
