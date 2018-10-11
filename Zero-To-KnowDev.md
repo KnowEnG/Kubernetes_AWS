@@ -77,9 +77,9 @@
 
 12. Create the cluster:
 
-    Note: masters will not boot on M5 and C5 instance types but may have changed
+    Note: [masters will not boot on M5 and C5 instance types](https://github.com/kubernetes/kops/blob/master/docs/releases/1.8-NOTES.md#significant-changes) but may have changed
 
-    <**Pramod!** Consider using Kubernetes version with flag: `--kubernetes-version` and consider using `--vpc: string Set to use a shared VPC` and many other KOPS flags for helm & cfn setup>
+    <**Pramod!** Consider using Kubernetes version with flag: `--kubernetes-version` and consider using `--vpc: string Set to use a shared VPC` and [many other KOPS flags](https://github.com/kubernetes/kops/blob/master/docs/cli/kops_create_cluster.md) for helm & cfn setup>
 
     <pre>
     kops create cluster $NAME \
@@ -181,7 +181,7 @@
 
     Note: In the Deployment section:
 
-    spec.spec.containers.image:version (autoscaler version that needs to be compatible with k8s version)→ should be v1.2.2 unless autoscaler upgraded,  spec.spec.containers.command.--nodes, spec.spec.containers.env.name, spec.spec.containers.env.value
+    **spec.spec.containers.image:version** ([autoscaler version that needs to be compatible with k8s version](https://github.com/kubernetes/autoscaler/tree/master/cluster-autoscaler#releases)) → should be v1.2.2 unless autoscaler upgraded, **spec.spec.containers.command.--nodes**, **spec.spec.containers.env.name**, **spec.spec.containers.env.value**
 
     <pre>
     spec:
@@ -212,18 +212,18 @@
 
     If the efs doesn't already exist:
 
-      1. Go to EFS via AWS Console
+      1. Go to [EFS via AWS Console](https://console.aws.amazon.com/efs/home?region=us-east-1#/filesystems)
       2. Click on "Create File System"
       3. Under "Configure file system access", Select the VPC created by the K8S cluster, i.e. add all subnets
       4. Under "Manage mount targets", Make sure the subnets and security groups correspond to the newly created ones as well.
 
     If the efs already exists that you can use for this cluster:
 
-      1. Select the efs name > Manage file system access > Choose the cluster VPC (vpc-<id> - knowdev.k8s.local)
+      1. Select the efs name > Manage file system access > Choose the cluster VPC (**vpc-<id> - knowdev.k8s.local**)
       2. Under "Manage mount targets":
-          a. Add all subnets (subnet-<id> - us-east-1<a-f>.knowdev.k8s.local)
+          a. Add all subnets (**subnet-<id> - us-east-1<a-f>.knowdev.k8s.local**)
           b. Delete the default security group
-          c. Attach the new security groups (sg-<id> - nodes.knowdev.k8s.local)
+          c. Attach the new security groups (**sg-<id> - nodes.knowdev.k8s.local**)
           d. Save
 
 19. Deploy the efs provisioner
@@ -238,7 +238,7 @@
 
     Make sure the "Life Cycle State" under "Mount targets" in EFS is "Available" and NOT "Creating" before attaching a new instance for efs-access and creating following PVCs.
 
-    Clean the network files from old cluster before new cluster from within the efs-access instance (instructions below) and before creating following PVCs (if using existing efs). If not cleaned, it will create a new directory called "efs-*-pvc-" adding to the storage costs)
+    **Clean the network files from old cluster before new cluster from within the efs-access instance (instructions below) and before creating following PVCs (if using existing efs). If not cleaned, it will create a new directory called "efs-*-pvc-" adding to the storage costs).**
 
     `cd efs/ → sudo rm -r efs-*`
 
@@ -324,11 +324,11 @@
 
     `scp -i <ssh-key>.pem path/to/knoweng.crt ubuntu@<knowdevkops>:/home/ubuntu/`
 
-    \# Create the knowssl-secret:
+    \# Create the **knowssl-secret**:
 
     `kubectl create secret tls knowdevssl-secret --key /home/ubuntu/knoweng.key --cert /home/ubuntu/knoweng.crt`
 
-    \# Create Ingress Object & TLS Ingress Rule:
+    \# Create **Ingress Object** & **TLS Ingress Rule**:
 
     `kubectl apply -f https://raw.githubusercontent.com/prkriz/knowkubedev/master/knowengressdev.yaml`
 
