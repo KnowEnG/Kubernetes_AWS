@@ -13,7 +13,7 @@ rules:
   verbs: ["get", "list", "create", "delete"]
 - apiGroups: ["batch"]
   resources: ["jobs"]
-  verbs: ["get", "list", "create", "delete"]
+  verbs: ["get", "list", "create", "delete", "update"]
 ---
 # This cluster role binding allows anyone in the "manager" group to read secrets in any namespace.
 kind: ClusterRoleBinding
@@ -28,4 +28,3 @@ roleRef:
    kind: ClusterRole
    name: job-submission
    apiGroup: rbac.authorization.k8s.io
-
