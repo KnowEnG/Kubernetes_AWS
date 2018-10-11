@@ -106,7 +106,7 @@
       * maxSize
       * minSize
       * nodeLabels.instancegroup
-      * nodeLabels.pipeline_jobs
+      * nodeLabels.pipeline_jobs (add)
 
     <pre>
     spec:
@@ -128,7 +128,7 @@
       * maxSize
       * minSize
       * nodeLabels.instancegroup
-      * nodeLabels.pipeline_jobs
+      * nodeLabels.pipeline_jobs (add)
 
     <pre>
     spec:
@@ -208,7 +208,7 @@
 
     `kubectl apply -f cluster-autoscaler-one-asg.yaml`
 
-18. Configure an EFS on the same VPC and Security Group ("nodes.knowdev.k8s.local") as the new cluster: only change the efs vpc and security groups for now and transfer files to efs-network....
+18. Configure an EFS on the same VPC and Security Group ("nodes.knowdev.k8s.local") as the new cluster: only change the efs vpc and security groups for now and transfer files to efs-network below....
 
     If the efs doesn't already exist:
 
@@ -236,7 +236,9 @@
 
 21. Allocate/Populate Shared Storage:
 
-    Clean the network files from old cluster before new cluster from within the efs-access instance described above and before creating following pvc (if using existing efs)
+    Make sure the "Life Cycle State" under "Mount targets" in EFS is "Available" and NOT "Creating" before attaching a new instance for efs-access and creating following PVCs.
+
+    Clean the network files from old cluster before new cluster from within the efs-access instance (instructions below) and before creating following PVCs (if using existing efs). If not cleaned, it will create a new directory called "efs-*-pvc-" adding to the storage costs)
 
     `cd efs/ → sudo rm -r efs-*`
 
@@ -250,7 +252,7 @@
 
 22. Seed the KnowEnG database with the options to present to the user in the UI for the submitting a new pipeline job (In the efs-access instance and not KOPS instance)
 
-    Dummy instance (efs-access) steps: First, create a security group knowdev-efs-access in the same new VPC created by the KnowDev and the one you attached to the EFS and NOT the default or other VPC: This SG should let you connect to the the knowdev-efs-access instance by opening up port 22 from your ip, and that's all you need → Create a new instance knowdev-efs-access (any size, tiny is fine) in the same VPC, otherwise, you won't be able to access efs and/or the new SG → During Step 3: Configure Instance Details, When you change network field to the new VPC and not default -> the Auto-assign Public IP value changes to Use subnet setting (Disable), change that to Enable so the instance has public ip to ssh into → During Step 6: Configure Security Group's Assign a security group, choose Select an existing security group, and check knowdev-efs-access & nodes.knowdev.k8s.local → Attach Use a new or already existing key-pair while launching and to connect later → Connect to the instance and follow the mounting instruction on EFS console (install nfs-client, mkdir efs, and mount .... ) →
+    Dummy instance (efs-access) steps: First, create a security group knowdev-efs-access in the same new VPC created by the KnowDev and the one you attached to the EFS and NOT the default or other VPC: This SG should let you connect to the the knowdev-efs-access instance by opening up port 22 from your ip, and that's all you need → Create a new instance knowdev-efs-access (any size, tiny is fine) in the same VPC, otherwise, you won't be able to access efs and/or the new SG → During Step 3: Configure Instance Details, When you change network field to the new VPC and not default -> the Auto-assign Public IP value changes to Use subnet setting (Disable), change that to Enable so the instance has public ip to ssh into → During Step 6: Configure Security Group's Assign a security group, choose Select an existing security group, and check knowdev-efs-access & nodes.knowdev.k8s.local → Attach Use a new or already existing key-pair while launching and to connect later → Connect to the instance and follow the mounting instruction on EFS console (apt update, install nfs-client, mkdir efs, and mount .... ) →
 
     Copying the network files for a new cluster: cd efs/ → create the pvcs below and make sure efs-network-someuuid now appears → sudo cp network-files-to-copy(?)/. efs-network-someuuid/ → efs-network-someuuid now should have the network files that's in in the originals folder. → When you deploy nest.prod.yaml, these files would let the nest pods and jobs container run successfully.
 
@@ -264,7 +266,7 @@
 
     Important: This dummy instance will prevent KOPS delete cluster, so to clean resources before deleting cluster: detach the sg nodes.knowdev.k8s.local → detach and delete knowdev-efs-access → terminate the instance
 
-    Note: While the files are being copied, you can run the following:
+    Note: While the files are being copied, you can perform the following operations as per the instructions below up to and not including "Deploy KnowEnG Platform", i.e. :
 
       1. Choose one of your worker nodes and label it with "has-dns=true"
       2. Helm install nginx-controller
@@ -274,7 +276,9 @@
 
     `kubectl label node $(kubectl get nodes -l kops.k8s.io/instancegroup=nodes --no-headers | head -n 1 | awk '{print $1}') has-dns=true`
 
-    Create a new security group **knowdevweb** that opens up ports **80** & **443** to the world. Attach this sg to the node that has been labelled **has-dns=true**.
+    Create a new security group **knowdevweb** in cluster VPC that opens up ports **80** & **443** to the world. Attach this sg to the node that has been labelled **has-dns=true**.
+
+    Update the DNS record for dev.knoweng.org to point to the ip of this node
 
 24. Helm install nginx-controller
 
@@ -308,15 +312,13 @@
 
     `cd ..`
 
-26. Deploy KnowEnG Platform (after efs network files copying is complete):
+26. SSL Setup:
 
-    `kubectl apply -f https://raw.githubusercontent.com/prkriz/knowkubedev/master/nest.dev.yaml`
+    **Pramod!** Store the keys in encrypted S3 bucket and automate the transfer via S3 CLI
 
-    `kubectl apply -f https://raw.githubusercontent.com/prkriz/knowkubedev/master/nest.rbac.yaml`
+    \# Copy the SSL certificate & Key to the KnowDevKOPS instance from a source (such as your local machine):
 
-27. SSL Setup:
-
-    \# Copy the SSL certificate & Key to the KnowDevKOPS instance
+    \# Run this NOT in KnowDevKOPS (but in a machine which can access the path/to/ssl-certs):
 
     `scp -i <ssh-key>.pem path/to/knoweng.key ubuntu@<knowdevkops>:/home/ubuntu/`
 
@@ -330,27 +332,34 @@
 
     `kubectl apply -f https://raw.githubusercontent.com/prkriz/knowkubedev/master/knowengressdev.yaml`
 
+27. Deploy KnowEnG Platform (after efs-network files copying is complete):
+
+    `kubectl apply -f https://raw.githubusercontent.com/prkriz/knowkubedev/master/nest.dev.yaml`
+
+    `kubectl apply -f https://raw.githubusercontent.com/prkriz/knowkubedev/master/nest.rbac.yaml`
+
 28. Stop KnowDevKOPS until further use and detach/modify security group for no ssh access
 
-    DANGER ZONE! To Clean the Resources:
 
-    Make sure the efs is detached from all the security groups and make sure efs doesn't belong to any VPC anymore.
+## DANGER ZONE! To Clean the Resources:
 
-    Also the new security group"knowdevweb" opening up web ports to "node" should be de-tached from node and deleted.
+Make sure the efs is detached from all the security groups and make sure efs doesn't belong to any VPC anymore.
 
-    Also, clean the resources associated with Dummy efs-access instance (see efs docs above)
+Also the new security group"knowdevweb" opening up web ports to "node" should be de-tached from node and deleted.
 
-    `helm delete support --purge`
+Also, clean the resources associated with Dummy efs-access instance (see efs docs above)
 
-    `kubectl delete namespace support`
+`helm delete support --purge`
 
-    `export NAME=knowdev.k8s.local && export KOPS_STATE_STORE=s3://knowdevkops-state-store`
+`kubectl delete namespace support`
 
-    `kops delete cluster $NAME --yes`
+`export NAME=knowdev.k8s.local && export KOPS_STATE_STORE=s3://knowdevkops-state-store`
 
-    Note: This may take a while. Verify via Console/CLI that the KnowDev master(s), node(s), pipes1(s), and pipes2(s) are terminated
+`kops delete cluster $NAME --yes`
 
-    Finally, remove A record for "dev.knoweng.org" in the IPAM manager, so that UIUC owned domain doesn't point to an arbitrary machine
+Note: This may take a while. Verify via Console/CLI that the KnowDev master(s), node(s), pipes1(s), and pipes2(s) are terminated
+
+Finally, remove A record for "dev.knoweng.org" in the IPAM manager, so that UIUC owned domain doesn't point to an arbitrary machine
 
 
 ## Using Private Docker Images?
