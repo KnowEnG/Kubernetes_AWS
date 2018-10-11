@@ -156,9 +156,10 @@ spec:
         ports:
         - containerPort: 6379
           protocol: TCP
-        volumeMounts:
-        - name: redisdata
-          mountPath: "/data"
+        # redis_i should NOT persist data for now--RQ doesn't clean up after itself
+        #volumeMounts:
+        #- name: redisdata
+        #  mountPath: "/data"
 
         # nest_jobs_i
       - image: knowengdev/nest:jobs
@@ -213,6 +214,7 @@ spec:
       - name: pgdata
         persistentVolumeClaim:
           claimName: efs-postgres
-      - name: redisdata
-        persistentVolumeClaim:
-          claimName: efs-redis
+      # not used
+      #- name: redisdata
+      #  persistentVolumeClaim:
+      #    claimName: efs-redis
