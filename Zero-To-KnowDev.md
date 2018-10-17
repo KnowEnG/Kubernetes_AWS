@@ -1,6 +1,14 @@
 
 ## Zero-To-KnowDev ([https://dev.knoweng.org](https://dev.knoweng.org))
 
+### Overview
+    * Steps 1-10 are to set up the **controller**
+    * Steps 10-28? are to set up the **cluster**
+    * [To Clean the Resources](#danger-zone-to-clean-the-resources)
+    * [Using Private Docker Images?](#using-private-docker-images)
+
+### Steps
+
 1. Spin up kubectl cli host **KnowDevKOPS** (t2.medium) on AWS & create/edit security group **knowdevkops** to allow ssh (port 22) from your ip.
 
     Note: You will be given option to either use already created/downloaded key-pair or create a new one for this instance. If you use the existing one, you need to acknowledge you have it accessible/available.
