@@ -3,8 +3,8 @@
 
 ### Overview
 
-* Steps [1](step-1)-10 are to set up the **controller**
-* Steps [10](step-10)-28? are to set up the **cluster**
+* Steps [1](#step-1)-10 are to set up the **controller**
+* Steps [10](#step-10)-28? are to set up the **cluster**
 * [To Clean the Resources](#danger-zone-to-clean-the-resources)
 * [Using Private Docker Images?](#using-private-docker-images)
 
