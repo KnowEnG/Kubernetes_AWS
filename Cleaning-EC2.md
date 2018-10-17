@@ -7,12 +7,14 @@ The purpose of this document is to walk through the steps of terminating an EC2 
 
 ### Note the Resources attached to an EC2 Instance:
 
-    1. EC2 Instance (KnowPipes)
-    2. Security Group (knowpipes)
-    3. Root/block device (/dev/sda1)
-    4. Elastic ip Address (if any)
-    5. IPAM DNS (if any)
-    6. Optional: vpc (if not default-vpc)
+1. EC2 Instance (KnowPipes)
+2. Security Group (knowpipes)
+3. Root/block device (/dev/sda1)
+4. Elastic ip Address (if any)
+5. IPAM DNS (if any)
+6. Optional: vpc (if not default-vpc)
+
+### Steps
 
 1. AWS Console: Select the instance to terminate (e.g. KnowPipes)
 
@@ -38,7 +40,7 @@ The purpose of this document is to walk through the steps of terminating an EC2 
 
 6. Delete DNS entry from IPAM manager:
 
-    Go to [IPAM](https://ipam.illinois.edu/) manager > Select the DNS record for the hostname > Delete 
+    Go to [IPAM](https://ipam.illinois.edu/) manager > Select the DNS record for the hostname > Delete
 
     This will avoid pointing our Domain to some arbitrary VM that someone creates and AWS attaches to that VM. Specially with University owned Domains. It may take a while for DNS to propagate, depending on TTL (Time to Live) setting for the Record.
 
