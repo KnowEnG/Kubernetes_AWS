@@ -4,8 +4,8 @@
 ### Overview
     * Steps 1-10 are to set up the **controller**
     * Steps 10-28? are to set up the **cluster**
-    * [To Clean the Resources](#danger-zone-to-clean-the-resources)
-    * [Using Private Docker Images?](#using-private-docker-images)
+    * Some text [To Clean the Resources](#danger-zone-to-clean-the-resources)
+    * Some text [Using Private Docker Images?](#using-private-docker-images)
 
 ### Steps
 
