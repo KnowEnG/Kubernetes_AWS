@@ -360,7 +360,7 @@ Make sure the efs is detached from all the security groups and make sure efs doe
 
 Also the new security group"knowdevweb" opening up web ports to "node" should be de-tached from node and deleted.
 
-Also, clean the resources associated with Dummy efs-access instance (see efs docs above).
+Also, clean the resources associated with Dummy efs-access instance (see efs docs above and [the EC2 cleaning doc](Cleaning-EC2.md)).
 
 `helm delete support --purge`
 
