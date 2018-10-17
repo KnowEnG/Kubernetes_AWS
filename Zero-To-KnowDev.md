@@ -3,13 +3,14 @@
 
 ### Overview
 
-* Steps 1-10 are to set up the **controller**
-* Steps 10-28? are to set up the **cluster**
+* Steps [1](step-1)-10 are to set up the **controller**
+* Steps [10](step-10)-28? are to set up the **cluster**
 * [To Clean the Resources](#danger-zone-to-clean-the-resources)
 * [Using Private Docker Images?](#using-private-docker-images)
 
 ### Steps
 
+<a name="step-1"></a>
 1. Spin up kubectl cli host **KnowDevKOPS** (t2.medium) on AWS & create/edit security group **knowdevkops** to allow ssh (port 22) from your ip.
 
     Note: You will be given option to either use already created/downloaded key-pair or create a new one for this instance. If you use the existing one, you need to acknowledge you have it accessible/available.
@@ -70,6 +71,7 @@
 
     `aws s3api put-bucket-versioning --bucket knowdevkops-state-store  --versioning-configuration Status=Enabled`
 
+<a name="step-10"></a>
 10. Set up an ssh keypair to use with the cluster:
 
     `ssh-keygen -t rsa -b 4096 -N '' -f "$HOME/.ssh/id_rsa" -q`
