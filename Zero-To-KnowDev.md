@@ -4,7 +4,7 @@
 ### Overview
 
 * Steps [1](#step-1)-10 are to set up the **controller**
-* Steps [10](#step-10)-28? are to set up the **cluster**
+* Steps [11](#step-11)-28? are to set up the **cluster**
 * [To Clean the Resources](#danger-zone-to-clean-the-resources)
 * [Using Private Docker Images?](#using-private-docker-images)
 
@@ -71,11 +71,11 @@
 
     `aws s3api put-bucket-versioning --bucket knowdevkops-state-store  --versioning-configuration Status=Enabled`
 
-<a name="step-10"></a>
 10. Set up an ssh keypair to use with the cluster:
 
     `ssh-keygen -t rsa -b 4096 -N '' -f "$HOME/.ssh/id_rsa" -q`
 
+<a name="step-11"></a>
 11. Set up a few environment variables for the cluster "KnowDev":
 
     <pre>
