@@ -5,9 +5,13 @@ Kubernetes Deployment files to setup KnowKubeDev (KnowEng Platform Dev Cluster)
 
 ## Create a ssh key-pair in a desired region
 # [Launch CFN](https://us-west-2.console.aws.amazon.com/cloudformation/home?region=us-west-1#/stacks/new?stackName=KnowEnG-Platform&templateURL=https://s3.amazonaws.com/knowscripts/knoweng-platform-with-new-vpc.template) in the desired region. Takes about 10 minutes
+
 New Launch URL: https://us-west-2.console.aws.amazon.com/cloudformation/home?region=us-west-1#/stacks/new?stackName=KnowEnG-Platform&templateURL=https://raw.githubusercontent.com/KnowEng/Kubernetes_AWS/master/knoweng-platform-with-new-vpc.template
+
 New CFN template URL: https://raw.githubusercontent.com/KnowEng/Kubernetes_AWS/master/knoweng-platform-with-new-vpc.template
+
 Old Launch URL: https://us-west-2.console.aws.amazon.com/cloudformation/home?region=us-west-1#/stacks/new?stackName=KnowEnG-Platform&templateURL=https://s3.amazonaws.com/knowscripts/knoweng-platform-with-new-vpc.template
+
 Old CFN template URL: https://s3.amazonaws.com/knowscripts/knoweng-platform-with-new-vpc.template
 
 # Local- move keypair to bastion from local
