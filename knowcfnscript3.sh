@@ -175,7 +175,7 @@ echo $divider_line
 echo " Pods RBAC "
 echo $divider_line
 sleep 2
-kubectl apply -f https://raw.githubusercontent.com/prkriz/knowkubedev/master/nest.rbac.yaml
+kubectl apply -f https://raw.githubusercontent.com/KnowEng/Kubernetes_AWS/master/nest.rbac.yaml
 if [ $? -eq 0 ]
 	then
 	echo
@@ -191,7 +191,7 @@ echo $divider_line
 echo " Deploying KnowEnG pods "
 echo $divider_line
 sleep 2
-kubectl apply -f https://raw.githubusercontent.com/prkriz/knowkubedev/master/nest.cfn.yaml
+kubectl apply -f https://raw.githubusercontent.com/KnowEng/Kubernetes_AWS/master/nest.cfn.yaml
 if [ $? -eq 0 ]
 	then
 	echo
