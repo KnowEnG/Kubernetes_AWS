@@ -630,6 +630,9 @@ Resources:
       - Key: Name
         Value: k8s-node
         PropagateAtLaunch: 'true'
+      - Key: pipelines_jobs
+        Value: 'true'
+        PropagateAtLaunch: 'true'
       - Key: KubernetesCluster
         Value:
           Fn::If:

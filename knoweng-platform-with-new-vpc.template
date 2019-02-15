@@ -546,7 +546,7 @@ Resources:
   K8sStack:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: !Sub "https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/kubernetes-cluster.template"
+      TemplateURL: !Sub "https://s3.amazonaws.com/knowscripts/kubernetes-cluster.template"
       Parameters:
         VPCID: !Ref VPC
         AvailabilityZone: !Ref AvailabilityZone
