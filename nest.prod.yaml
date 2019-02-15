@@ -215,4 +215,3 @@ spec:
       - name: redisdata
         persistentVolumeClaim:
           claimName: efs-redis
-
