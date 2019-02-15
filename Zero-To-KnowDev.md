@@ -15,7 +15,7 @@
 
     Note: You will be given option to either use already created/downloaded key-pair or create a new one for this instance. If you use the existing one, you need to acknowledge you have it accessible/available.
 
-    Optional: Record/copy the public ip given to the instance and update the record for "knowdevkops.knoweng.org" in the IPAM management console. But you can easily connect to this machine via it's public ip.
+    Optional: Record/copy the public ip given to the instance and update the record for "knowdevkops.knoweng.org" in the IPAM management console. But you can easily connect to this machine via its public ip.
 
 2. **Pramod!** Add steps to create **IAM Role KnowKubeKOPS** with permissions required for KOPS
 
@@ -265,7 +265,7 @@
 
 22. Seed the KnowEnG database with the options to present to the user in the UI for the submitting a new pipeline job (In the efs-access instance and not KOPS instance)
 
-    Dummy instance (efs-access) steps: First, create a security group knowdev-efs-access in the same new VPC created by the KnowDev and the one you attached to the EFS and NOT the default or other VPC: This SG should let you connect to the the knowdev-efs-access instance by opening up port 22 from your ip, and that's all you need → Create a new instance knowdev-efs-access (any size, tiny is fine) in the same VPC, otherwise, you won't be able to access efs and/or the new SG → During Step 3: Configure Instance Details, When you change network field to the new VPC and not default -> the Auto-assign Public IP value changes to Use subnet setting (Disable), change that to Enable so the instance has public ip to ssh into → During Step 6: Configure Security Group's Assign a security group, choose Select an existing security group, and check knowdev-efs-access & nodes.knowdev.k8s.local → Attach Use a new or already existing key-pair while launching and to connect later → Connect to the instance and follow the mounting instruction on EFS console (apt update, install nfs-client, mkdir efs, and mount .... ) →
+    Dummy instance (efs-access) steps: First, create a security group knowdev-efs-access in the same new VPC created by the KnowDev and the one you attached to the EFS and NOT the default or other VPC: This SG should let you connect to the the knowdev-efs-access instance by opening up port 22 from your ip, and that's all you need → Create a new instance knowdev-efs-access (any size, tiny is fine) in the same VPC, otherwise, you won't be able to access efs and/or the new SG → During Step 3: Configure Instance Details, When you change network field to the new VPC and not default -> the Auto-assign Public IP value changes to Use subnet setting (Disable), change that to Enable so the instance has public ip to ssh into → During Step 6: Configure Security Group's Assign a security group, choose Select an existing security group, and check knowdev-efs-access & nodes.knowdev.k8s.local → Attach Use a new or already existing key-pair while launching and to connect later → Connect to the instance and follow the mounting instruction on EFS console (apt update, install nfs-client/nfs-common?, mkdir efs, and mount .... ) →
 
     Copying the network files for a new cluster: cd efs/ → create the pvcs below and make sure efs-network-someuuid now appears → sudo cp network-files-to-copy(?)/. efs-network-someuuid/ → efs-network-someuuid now should have the network files that's in in the originals folder. → When you deploy nest.prod.yaml, these files would let the nest pods and jobs container run successfully.
 
@@ -279,19 +279,20 @@
 
     Important: This dummy instance will prevent KOPS delete cluster, so to clean resources before deleting cluster: detach the sg nodes.knowdev.k8s.local → detach and delete knowdev-efs-access → terminate the instance
 
-    Note: While the files are being copied, you can perform the following operations as per the instructions below up to and not including "Deploy KnowEnG Platform", i.e. :
+    Note: While the files are being copied, you can perform the following operations as per the instructions below up to and not including "Deploy KnowEnG Platform", i.e.:
 
-      1. Choose one of your worker nodes and label it with "has-dns=true"
-      2. Helm install nginx-controller
-      3. Install nginx and other support stuff!
+      i. Choose one of your worker nodes and label it with "has-dns=true"
+      ii. Helm install nginx-controller
+      iii. Install nginx and other support stuff!
+      iv. ?SSL Setup:
 
 23. Choose one of your worker nodes and label it with "has-dns=true"
 
     `kubectl label node $(kubectl get nodes -l kops.k8s.io/instancegroup=nodes --no-headers | head -n 1 | awk '{print $1}') has-dns=true`
 
-    Create a new security group **knowdevweb** in cluster VPC that opens up ports **80** & **443** to the world. Attach this sg to the node that has been labelled **has-dns=true**.
+    Create a new security group **knowdevweb** in cluster VPC that opens up ports **80** & **443** to the world. Attach this sg to the node that has been labelled **has-dns=true**. (To see this, use `kubectl get nodes --show-labels` or perhaps `kubectl get nodes --show-labels | grep has-dns`.)
 
-    Update the DNS record for dev.knoweng.org to point to the ip of this node
+    Update the DNS record (in IPAM) for dev.knoweng.org to point to the public ip of this node.
 
 24. Helm install nginx-controller
 
@@ -358,7 +359,7 @@
 
 Make sure the efs is detached from all the security groups and make sure efs doesn't belong to any VPC anymore.
 
-Also the new security group"knowdevweb" opening up web ports to "node" should be de-tached from node and deleted.
+Also the new security group "knowdevweb" opening up web ports to "node" should be detached from node and deleted.
 
 Also, clean the resources associated with Dummy efs-access instance (see efs docs above and [the EC2 cleaning doc](Cleaning-EC2.md)).
 
