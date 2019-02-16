@@ -1,4 +1,10 @@
 #!/bin/bash
+if [ -z "$EFS_DNS" ]
+	then
+	echo "EFS_DNS is not set"
+	exit
+fi
+
 exit_msg=" Sorry! Something went wrong. Please Delete the Stack and Try Again. "
 divider_line="--------------------------------------------------------------------------"
 echo

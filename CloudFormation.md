@@ -30,7 +30,7 @@ Host master
 # Bastion- Export EFS
 `export EFS_DNS={EFS_DNS_NAME}`
 
-# Bastion- Modify efs id, availability zone, and efs server
+# Bastion- Modify efs id (file system id), availability zone (region), and efs server (server)
 New location:
 `wget https://raw.githubusercontent.com/KnowEng/Kubernetes_AWS/master/efs-provisioner.yaml`
 
