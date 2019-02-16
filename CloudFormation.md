@@ -31,9 +31,20 @@ Host master
 `export EFS_DNS={EFS_DNS_NAME}`
 
 # Bastion- Modify efs id, availability zone, and efs server
+New location:
+`wget https://raw.githubusercontent.com/KnowEng/Kubernetes_AWS/master/efs-provisioner.yaml`
+
+Old location:
 `wget https://raw.githubusercontent.com/prkriz/knowkubedev/master/efs-provisioner.yaml`
 
 # Bastion- Run the KNOWENG_INIT_FILE
+New steps:
+```
+wget https://raw.githubusercontent.com/KnowEng/Kubernetes_AWS/master/knowcfnscript3.sh
+sh knowcfnscript3.sh
+```
+
+Old steps:
 ```
 wget https://raw.githubusercontent.com/prkriz/knowkubedev/master/knowcfnscript3.sh
 sh knowcfnscript3.sh
