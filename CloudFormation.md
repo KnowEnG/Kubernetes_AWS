@@ -51,7 +51,14 @@ sh knowcfnscript3.sh
 ```
 
 # Clean Resources/Stack
+
 ## Delete EFS mount targets and optionally, efs.
+
 ## Delete the load balancer exposed by kubectl
 `kubectl delete svc nest-public-lb`
+
 ## Delete the non-nested stack from AWS Cloudformation Console
+(It has happened sometimes that this delete fails because a VPC could
+not be deleted; in those cases, deleting the VPC on the AWS console --
+make sure you delete the right VPC! -- and then re-trying to delete
+the stack has worked.)
