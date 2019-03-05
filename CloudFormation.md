@@ -59,6 +59,6 @@ sh knowcfnscript3.sh
 
 ## Delete the non-nested stack from AWS Cloudformation Console
 (It has happened sometimes that this delete fails because a VPC could
-not be deleted; in those cases, deleting the VPC on the AWS console --
+not be deleted; in those cases, deleting the VPC from the AWS console --
 make sure you delete the right VPC! -- and then re-trying to delete
 the stack has worked.)
