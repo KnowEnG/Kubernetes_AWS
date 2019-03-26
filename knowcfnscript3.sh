@@ -61,7 +61,11 @@ echo $divider_line
 echo " EFS Provisioner "
 echo $divider_line
 sleep 2
-kubectl apply -f efs-provisioner.yaml
+EFS_ID=$(echo "$EFS_DNS" | cut -f1 -d.)
+EFS_REGION=$(echo "$EFS_DNS" | cut -f3 -d.)
+curl -s https://raw.githubusercontent.com/KnowEng/Kubernetes_AWS/master/efs-provisioner.yaml | \
+    sed -e "s/EFS_DNS/$EFS_DNS/" -e "s/EFS_ID/$EFS_ID/" -e "s/EFS_REGION/$EFS_REGION/" | \
+    kubectl apply -f -
 if [ $? -eq 0 ]
 	then
 	echo
