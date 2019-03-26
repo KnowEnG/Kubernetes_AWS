@@ -97,7 +97,7 @@ echo $divider_line
 echo " PVCs - networks "
 echo $divider_line
 sleep 2
-kubectl apply -f https://raw.githubusercontent.com/prkriz/knowkubedev/master/pvcs/networks.pvc.yaml
+kubectl apply -f https://raw.githubusercontent.com/KnowEng/Kubernetes_AWS/master/pvcs/networks.pvc.yaml
 if [ $? -eq 0 ]
 	then
 	echo
@@ -113,7 +113,7 @@ echo $divider_line
 echo " PVCs - postgres "
 echo $divider_line
 sleep 2
-kubectl apply -f https://raw.githubusercontent.com/prkriz/knowkubedev/master/pvcs/postgres.pvc.yaml
+kubectl apply -f https://raw.githubusercontent.com/KnowEnG/Kubernetes_AWS/master/pvcs/postgres.pvc.yaml
 if [ $? -eq 0 ]
 	then
 	echo
@@ -129,7 +129,7 @@ echo $divider_line
 echo " PVCs - redis"
 echo $divider_line
 sleep 2
-kubectl apply -f https://raw.githubusercontent.com/prkriz/knowkubedev/master/pvcs/redis.pvc.yaml
+kubectl apply -f https://raw.githubusercontent.com/KnowEnG/Kubernetes_AWS/master/pvcs/redis.pvc.yaml
 if [ $? -eq 0 ]
 	then
 	echo
@@ -145,7 +145,7 @@ echo $divider_line
 echo " PVCs - userfiles "
 echo $divider_line
 sleep 2
-kubectl apply -f https://raw.githubusercontent.com/prkriz/knowkubedev/master/pvcs/userfiles.pvc.yaml
+kubectl apply -f https://raw.githubusercontent.com/KnowEnG/Kubernetes_AWS/master/pvcs/userfiles.pvc.yaml
 if [ $? -eq 0 ]
 	then
 	echo
