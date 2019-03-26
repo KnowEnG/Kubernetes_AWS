@@ -97,7 +97,7 @@ echo $divider_line
 echo " PVCs - networks "
 echo $divider_line
 sleep 2
-kubectl apply -f https://raw.githubusercontent.com/prkriz/knowkubedev/master/pvcs/networks.pvc.yaml
+kubectl apply -f https://raw.githubusercontent.com/KnowEng/Kubernetes_AWS/master/pvcs/networks.pvc.yaml
 if [ $? -eq 0 ]
 	then
 	echo
@@ -113,7 +113,7 @@ echo $divider_line
 echo " PVCs - postgres "
 echo $divider_line
 sleep 2
-kubectl apply -f https://raw.githubusercontent.com/prkriz/knowkubedev/master/pvcs/postgres.pvc.yaml
+kubectl apply -f https://raw.githubusercontent.com/KnowEnG/Kubernetes_AWS/master/pvcs/postgres.pvc.yaml
 if [ $? -eq 0 ]
 	then
 	echo
@@ -129,7 +129,7 @@ echo $divider_line
 echo " PVCs - redis"
 echo $divider_line
 sleep 2
-kubectl apply -f https://raw.githubusercontent.com/prkriz/knowkubedev/master/pvcs/redis.pvc.yaml
+kubectl apply -f https://raw.githubusercontent.com/KnowEnG/Kubernetes_AWS/master/pvcs/redis.pvc.yaml
 if [ $? -eq 0 ]
 	then
 	echo
@@ -145,7 +145,7 @@ echo $divider_line
 echo " PVCs - userfiles "
 echo $divider_line
 sleep 2
-kubectl apply -f https://raw.githubusercontent.com/prkriz/knowkubedev/master/pvcs/userfiles.pvc.yaml
+kubectl apply -f https://raw.githubusercontent.com/KnowEnG/Kubernetes_AWS/master/pvcs/userfiles.pvc.yaml
 if [ $? -eq 0 ]
 	then
 	echo
@@ -246,14 +246,15 @@ else
 fi
 
 echo $divider_line
-echo " Printing Load Balancer "
+echo " Printing Platform URL "
 echo $divider_line
 sleep 2
-kubectl --namespace=default describe service nest-public-lb | grep "LoadBalancer Ingress"
+LB_URL=$(kubectl --namespace=default describe service nest-public-lb | grep "LoadBalancer Ingress" | sed -e "s/^LoadBalancer Ingress:\s*/http:\/\//")
 if [ $? -eq 0 ]
 	then
 	echo
-	echo " Congratulations-- KnowEnG Platform IS READY TO ROLL. Happy KnowEnG "
+	echo " Congratulations-- KnowEnG Platform is ready. "
+	echo " Open $LB_URL in your browser. "
 	sleep 2
 	echo
 else
