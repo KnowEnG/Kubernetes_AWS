@@ -3,8 +3,8 @@ kind: ConfigMap
 metadata:
   name: efs-provisioner
 data:
-  file.system.id: fs-ab8f3ee0
-  aws.region: us-east-1
+  file.system.id: EFS_ID
+  aws.region: EFS_REGION
   provisioner.name: knowkubedev.knoweng.org/aws-efs
 ---
 apiVersion: v1
@@ -51,7 +51,7 @@ spec:
       volumes:
         - name: pv-volume
           nfs:
-            server: fs-ab8f3ee0.efs.us-east-1.amazonaws.com
+            server: EFS_DNS
             path: /
 ---
 kind: StorageClass
