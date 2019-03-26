@@ -246,7 +246,7 @@ else
 fi
 
 echo $divider_line
-echo " Printing Load Balancer "
+echo " Printing Platform URL "
 echo $divider_line
 sleep 2
 LB_URL=$(kubectl --namespace=default describe service nest-public-lb | grep "LoadBalancer Ingress" | sed -e "s/^LoadBalancer Ingress:\s*/http:\/\//")
