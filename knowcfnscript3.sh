@@ -249,11 +249,12 @@ echo $divider_line
 echo " Printing Load Balancer "
 echo $divider_line
 sleep 2
-kubectl --namespace=default describe service nest-public-lb | grep "LoadBalancer Ingress"
+LB_URL=$(kubectl --namespace=default describe service nest-public-lb | grep "LoadBalancer Ingress" | sed -e "s/^LoadBalancer Ingress:\s*/http:\/\//")
 if [ $? -eq 0 ]
 	then
 	echo
-	echo " Congratulations-- KnowEnG Platform IS READY TO ROLL. Happy KnowEnG "
+	echo " Congratulations-- KnowEnG Platform is ready. "
+	echo " Open $LB_URL in your browser. "
 	sleep 2
 	echo
 else
