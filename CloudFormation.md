@@ -1,217 +1,195 @@
 # Deploying the KnowEnG Platform to AWS via CloudFormation Template
 
+These instructions assume you have an AWS account and that you are signed in to the AWS Console.
+
 1. Create a cryptographic key pair in the desired AWS region by following the instructions
 for [Creating a Key Pair Using Amazon EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html#having-ec2-create-your-key-pair).
 (You can skip this step if you'd like to use a key pair you have already created in the region.)
 Note you must select the region before creating the key pair; you can do that with the
 dropdown menu that appears near the top-right corner of the screen.
 
-FIXME IMAGE
-1-change_region.png
+   ![Dropdown to change region](https://github.com/KnowEnG/Kubernetes_AWS/raw/master/img/1-change_region.png)
 
-2. Launch the KnowEnG Platform's CloudFormation Template by clicking [here](https://console.aws.amazon.com/cloudformation/home?region=us-west-1#/stacks/new?stackName=KnowEnG-Platform&templateURL=https://s3.amazonaws.com/knowscripts/knoweng-platform-simple.template)
+
+2. Launch the KnowEnG Platform's CloudFormation Template by clicking [here](https://console.aws.amazon.com/cloudformation/home?region=us-west-1#/stacks/new?stackName=KnowEnG-Platform&templateURL=https://s3.amazonaws.com/knowscripts/knoweng-platform-simple.template).
 You will then configure the template in a series of screens:
 
-  A. On the first screen, change the region using the dropdown menu that appears
-  near the top-right corner of the screen so that it matches the region of your 
-  key pair from step 1. Then press the `Next` button.
+   1. On the first screen, change the region using the dropdown menu that appears
+      near the top-right corner of the screen so that it matches the region of your 
+      key pair from step 1. Then press the `Next` button.
 
-  FIXME IMAGE
-  2a-change_region_and_next.png
+      ![Dropdown to change region](https://github.com/KnowEnG/Kubernetes_AWS/raw/master/img/2a-change_region_and_next.png)
 
-  B. On the second screen, set the following options:
+   2. On the second screen, set the following options:
 
-    i. **Stack name**: This is the name that will be used to identify the deployment
-    in the AWS CloudFormation web interface. You might want to change the default value
-    if you have multiple KnowEnG Platform deployments.
+      1. **Stack name**: This is the name that will be used to identify the deployment
+         in the AWS CloudFormation web interface. You might want to change the default value
+         if you have multiple KnowEnG Platform deployments.
 
-    ii. **Availability Zone**: This is the AWS Availability Zone within your selected region
-    that will host the cluster. Select any option from the list.
+      2. **Availability Zone**: This is the AWS Availability Zone within your selected region
+         that will host the cluster. Select any option from the list.
 
-    iii. **Admin Ingress Location**: This field can be used to limit administrator access
-    to the cluster. If all of your administrator traffic will originate from a limited
-    IP address range, you can enter it here. Otherwise, you can enter `0.0.0.0/0` to allow
-    administrator traffic from all locations.
+      3. **Admin Ingress Location**: This field can be used to limit administrator access
+         to the cluster. If all of your administrator traffic will originate from a limited
+         IP address range, you can enter it here. Otherwise, you can enter `0.0.0.0/0` to allow
+         administrator traffic from all locations.
 
-    iv. **SSH Key**: Select the key pair from step 1.
+      4. **SSH Key**: Select the key pair from step 1.
 
-    v. **Node Capacity**: This is the number of compute nodes that will be created within your cluster.
-    We recommend the default value unless you plan to run many simultaneous jobs and wish
-    to have them execute in parallel.
+      5. **Node Capacity**: This is the number of compute nodes that will be created within your cluster.
+         We recommend the default value unless you plan to run many simultaneous jobs and wish
+         to have them execute in parallel.
 
-    vi. **Instance Type**: This is the AWS EC2 instance type that will be used for each
-    compute node. We recommend the default value unless you'll be analyzing spreadsheets
-    that are larger than 1 gigabyte.
+      6. **Instance Type**: This is the AWS EC2 instance type that will be used for each
+         compute node. We recommend the default value unless you'll be analyzing spreadsheets
+         that are larger than 1 gigabyte.
 
-  Once you have set the above options, press the `Next` button.
+         Once you have set the above options, press the `Next` button.
 
-  C. On the third screen, you can skip all of the options (`Tags`, `Permissions`, `Rollback Triggers`, 
-and `Advanced`). Press the `Next` button.
+   3. On the third screen, you can skip all of the options (`Tags`, `Permissions`, `Rollback Triggers`, 
+      and `Advanced`). Press the `Next` button.
 
-  D. On the fourth screen, review your settings. In the section labeled `Capabilities`, click 
-  each of the checkboxes. Finally, press the `Create` button.
+   4. On the fourth screen, review your settings. In the section labeled `Capabilities`, click 
+      each of the checkboxes. Finally, press the `Create` button.
   
-After pressing the `Create` button, you will see a table of CloudFormation stacks.
-One stack in the table will have the name you set in step 2.B.i.; that is the stack
-you just created. Refresh the table until the status for your new stack is
-`CREATE_COMPLETE`. (You will also see a second stack appear with a similar name. 
-The second stack will be labeled `NESTED` and is created automatically as part of
-the KnowEnG Platform deployment process.) This might take 10 minutes or so.
+      After pressing the `Create` button, you will see a table of CloudFormation stacks.
+      One stack in the table will have the name you set in step 2.ii.a.; that is the stack
+      you just created. (You will also see a second stack appear with a similar name. 
+      The second stack will be labeled `NESTED` and is created automatically as part of
+      the KnowEnG Platform deployment process.) Refresh the table until the status for your new stack is
+      `CREATE_COMPLETE`. This might take 10 minutes or so.
 
-3. Gather details from new stack.
+3. Gather details from new stack. These details will be needed in later steps.
 
-switch to EC2 in Compute
-FIXME image
-3a-open_ec2.png
+   1. In the AWS Console, open the `Services` dropdown near the top-left corner and select `EC2`
+      from the `Compute` section.
+      
+      ![Dropdown to select EC2](https://github.com/KnowEnG/Kubernetes_AWS/raw/master/img/3a-open_ec2.png)
 
-click Running Instances
-FIXME image
-3b-open_running_instances.png
+   2. Click on `Running Instances`.
+   
+      ![Link to Running Instances](https://github.com/KnowEnG/Kubernetes_AWS/raw/master/img/3b-open_running_instances.png)
+      
+   3. In the table of running instances, find the row with a `Name` of `bastion-host`. (If you have
+      multiple instances with that name due to earlier deployments, choose the one whose `Launch Time` 
+      matches the time you ran step 2. You might have to scroll your window to the right in order to see 
+      the `Launch Time` column in the table.) Click on the `bastion-host` row in the table to display 
+      instance details at the bottom of the screen. From the instance details, make a note of the 
+      `IPv4 Public IP`.
+   
+      ![Details for bastion-host](https://github.com/KnowEnG/Kubernetes_AWS/raw/master/img/3c-get_bastion_details.png)
 
-select bastion-host and grab public IP
-FIXME image
-3c-get_bastion_details.png
+   4. Deselect the row for `bastion-host` by clicking it again. Now find the row with a `Name` of
+      `k8s-master`. (Once again, if you have multiple instances with that name, choose the one whose 
+      `Launch Time` matches the time you ran step 2.) Click on the `k8s-master` row in the table to display 
+      the instance details at the bottom of the screen. From the instance details, make a note of the
+      `Security Groups` (there will only be one), the `Private IPs` (there will only be one), and the `VPC ID`.
 
-deselect bastion-host; select k8s-master and grab private IP, vpc, and sec group
-FIXME image
-3d-get_master_details.png
-
-
-in my case,
-bastion public ip = 54.187.226.60
-master private ip = 10.0.12.220
-master vpc = vpc-04a10f4cafaef2be8
-master sg = KnowEnG-Platform-mjb-K8sStack-J73OHZWFHE1S-ClusterSecGroup-193IE7YGN0NT6
-
-
-
-Your new stack will include one virtual machine named `bastion-host`. This is the 
-machine you will use to complete the deployment.
-
-  A. Determine the public address of `bastion-host`.
-  
-    i. In the table of CloudFormation stacks from step 2, find your new stack and
-    click on its name in the `Stack Name` column. This will display more detailed
-    information about the stack.
+      ![Details for k8s-master](https://github.com/KnowEnG/Kubernetes_AWS/raw/master/img/3d-get_master_details.png)
     
-    ii. Scroll down to a section header for `Resources`, and click on the section 
-    header to expand the section. This will reveal a table of resources.
-    
-    iii. Find the row in the table with a `Logical ID` of `bastion-host`, and click 
-    on its `Physical ID`. This will open a new browser tab showing more information
-    about `bastion-host`.
-    
-    iv. Find the `Public DNS (IPv4)` near the bottom-right corner of the screen.
-    Copy the value to your clipboard. These instructions will refer to the value as
-    `BASTION_PUBLIC_IP`.
-    
-    FIXME MASTER_PRIVATE_IP
-    
-4. Create storage.
+4. Create storage for the KnowEnG Platform.
 
+   1. In the AWS Console, open the `Services` dropdown near the top-left corner and select `EFS`
+      from the `Storage` section.
+      
+      ![Dropdown to select EFS](https://github.com/KnowEnG/Kubernetes_AWS/raw/master/img/4a-open_efs.png)
 
-switch to EFS
-FIXME image
-4a-open_efs.png
-
-press `Create file system` button
-
-on first form, select master VPC as VPC (you'll see vpcid - vpc name)
-in table, Security groups column, click x button to remove default security group
-click in empty SC cell to select master SG (note options will be formatted as sgid-sgname, but we previously noted only sgname; look for match on sgname; note names very similar, so check carefully
-FIXME image
-4b-configure_efs.png
-
-press `Next Step`
-
-add Name tag
-FIXME image
-4c-name_efs.png
-
-scroll to bottom of page, skipping others, and press `Next Step`
-
-press `Create File System`
-
-on success page, capture DNS name
-FIXME image
-4d-get_efs_dns.png
-mine = fs-88637520.efs.us-west-2.amazonaws.com
-
-5. Complete deployment on the bastion virtual machine.
-
-  A. Copy your key pair file from step 1 to `bastion-host`. If your local machine has
-  a unix-like command line, the command will be
-  
-  ```
-  scp -i {path/to/keypair} {path/to/keypair} ubuntu@{BASTION_PUBLIC_IP}:/home/ubuntu/.ssh/
-  ```
-  
-  where `{path/to/keypair}` is the local path to your key pair file, and `{BASTION_PUBLIC_IP}`
-  is the address found in step 3.A. When asked to confirm the ECDSA key fingerprint, enter yes.
-  (If you didn't do it in step 1, you will first need to set
-  the permissions on your local copy of the key pair file using `chmod 400 {path/to/keypair}`.)
-  
-  B. SSH to `bastion-host`. If your local machine has a unix-like command line, the command
-  will be
-  
-  ```
-  ssh -i {path/to/keypair} ubuntu@{BASTION_PUBLIC_IP}
-  ```
-  
-  where `{path/to/keypair}` is the local path to your key pair file, and `{BASTION_PUBLIC_IP}`
-  is the address found in step 3.A.
-  
-  C. In your SSH session on `bastion-host`, edit /home/ubuntu/.ssh/config to include the following block:
-
-   ```
-   Host master
-       HostName {MASTER_PRIVATE_IP}
-       Port 22
-       User ubuntu
-       IdentityFile /home/ubuntu/.ssh/{keypair}
-       StrictHostKeyChecking no
-       UserKnownHostsFile /dev/null
-       ServerAliveInterval 60
-   ```
+   2. Press the `Create file system` button.
    
-   where `{MASTER_PRIVATE_IP}` is the address you found in step 3.A and `{keypair}` is
-   the name of your key pair file that you copied to the `/home/ubuntu/.ssh/` directory in step 5.A.
+   3. On the first form, change the value of the **VPC** field so that it matches the `VPC ID` you
+      captured in step 3.iv. (Note that each option for **VPC** will be of the form `{VPC ID} - {VPC name}`.
+      You can ignore the `VPC name` portion of each option; i.e., just match the `VPC ID` portion from
+      step 3.iv.) Then find the `Security groups` column in the table below, where you will see a value
+      has already been entered. Click the `x` icon near the top-right corner of that pre-entered value to
+      remove it. Then click in the now-empty field to add a new security group. From the list of options
+      displayed, select the one that matches the value you found in `Security Groups` in step 3.iv. (Note 
+      that each option will be of the form `{SG ID} - {SG name}`. You can ignore the `SG ID` portion of 
+      each option; i.e., just match the `SG name` portion to the value from step 3.iv. Security group 
+      names can be very similar to one another, so check carefully.) Press the `Next Step` button.
+   
+      ![First form to configure EFS](https://github.com/KnowEnG/Kubernetes_AWS/raw/master/img/4c-configure_efs.png)
 
-   D. In your SSH session on `bastion-host`, run the following command, where `{EFS_DNS_NAME}`
-   is the name from step 4.
+   4. On the second form, give a name to the new file system (e.g., `knoweng-platform-cloudformation`).           This name is only to help you identify the file system in the AWS Console. After entering the name,         scroll to the bottom of the page, skipping the other fields, and press the `Next Step` button.
 
-   ```
-   export EFS_DNS={EFS_DNS_NAME}
-   ```
-   
-   
+      ![Second form to name EFS](https://github.com/KnowEnG/Kubernetes_AWS/raw/master/img/4d-name_efs.png)
 
-   F. Initialize the KnowEnG Platform. In your SSH session on `bastion-host`, run 
-   the following two commands:
+   5. On the following page, review your selections and press the `Create File System` button. When you
+      are redirected to a page with a success message, make a note of the `DNS name` of your new file  
+      system.
+
+      ![EFS success page with DNS name](https://github.com/KnowEnG/Kubernetes_AWS/raw/master/img/4e-get_efs_dns.png)
+
+5. Complete deployment on the bastion virtual machine. These steps will be completed from the command
+   line, not the AWS Console.
+
+   1. Copy your key pair file from step 1 to `bastion-host`. If your local machine has
+      a unix-like command line, the command will be
+  
+      ```
+      scp -i {path/to/keypair} {path/to/keypair} ubuntu@{BASTION_PUBLIC_IP}:/home/ubuntu/.ssh/
+      ```
+  
+      where `{path/to/keypair}` is the local path to your key pair file, and `{BASTION_PUBLIC_IP}`
+      is the address found in step 3.iii. When asked to confirm the ECDSA key fingerprint, enter `yes`.
+      (If you didn't do it in step 1, you will first need to set
+      the permissions on your local copy of the key pair file using `chmod 400 {path/to/keypair}`.)
+  
+   2. SSH to `bastion-host`. If your local machine has a unix-like command line, the command
+      will be
+  
+      ```
+      ssh -i {path/to/keypair} ubuntu@{BASTION_PUBLIC_IP}
+      ```
+  
+      where `{path/to/keypair}` is the local path to your key pair file, and `{BASTION_PUBLIC_IP}`
+      is the address found in step 3.iii.
+  
+   3. In your SSH session on `bastion-host`, edit /home/ubuntu/.ssh/config to include the following block:
+
+      ```
+      Host master
+          HostName {MASTER_PRIVATE_IP}
+          Port 22
+          User ubuntu
+          IdentityFile /home/ubuntu/.ssh/{keypair}
+          StrictHostKeyChecking no
+          UserKnownHostsFile /dev/null
+          ServerAliveInterval 60
+      ```
    
-   ```
-   wget https://raw.githubusercontent.com/KnowEng/Kubernetes_AWS/master/knowcfnscript3.sh
-   sh knowcfnscript3.sh
-   ```
+      where `{MASTER_PRIVATE_IP}` is the address you found in step 3.iv and `{keypair}` is
+      the name of your key pair file that you copied to the `/home/ubuntu/.ssh/` directory in step 5.i.
+
+    4. In your SSH session on `bastion-host`, run the following command, where `{EFS_DNS_NAME}`
+       is the name from step 4.v.
+
+       ```
+       export EFS_DNS={EFS_DNS_NAME}
+       ```
+
+    5. Initialize the KnowEnG Platform. In your SSH session on `bastion-host`, run 
+       the following two commands:
    
-   The script will take 40 minutes or so to complete. Upon successful completion, the 
-   script will print a URL to open in your web browser.
+       ```
+       wget https://raw.githubusercontent.com/KnowEng/Kubernetes_AWS/master/knowcfnscript3.sh
+       sh knowcfnscript3.sh
+       ```
    
-   G. Open the KnowEnG Platform interface. In the web browser on your local machine, open 
-      the URL printed at the end of step 5.f. Sign in with username `fakeuser` and password
-      `GARBAGESECRET`.
+       The script will take 40 minutes or so to complete. Upon successful completion, the 
+       script will print a URL to open in your web browser.
+   
+    6. Open the KnowEnG Platform interface. In the web browser on your local machine, open 
+       the URL printed at the end of step 5.v. Sign in with username `fakeuser` and password
+       `GARBAGESECRET`.
 
 # Deleting a KnowEnG Platform Deployment
 
-FIXME ssh to master first?
-1. In your SSH session on `bastion-host`, run `kubectl delete svc nest-public-lb`.
-   ssh master
-   kubectl...
+1. In your SSH session on `bastion-host`, run `ssh master` and then `kubectl delete svc nest-public-lb`.
 
 2. In the AWS Console, open the `Services` dropdown near the top-left corner and select `EFS`
    from the `Storage` section. In the table of file systems, select the one you created in step 4.
-   Press the `Actions` button above the table and select `Delete file system`. Follow the on-screen instructions
-   to confirm and complete the deletion.
+   Press the `Actions` button above the table and select `Delete file system`. Follow the on-screen     
+   instructions to confirm and complete the deletion.
 
 3. In the AWS Console, open the `Services` dropdown near the top-left corner and select
    `CloudFormation` from the `Management & Governance` section. In the table of stacks, 
@@ -220,10 +198,5 @@ FIXME ssh to master first?
    delete the stack you created in step 2.) Press the `Actions` button above the table
    and select `Delete Stack`. Follow the on-screen instructions to confirm and 
    complete the deletion. You will see the stack's status change to `DELETE_IN_PROGRESS`.
-   Refresh the page until the stack no longer appears in the table, which might take 10 or so
-   minutes.
-
-(It has happened sometimes that this delete fails because a VPC could
-not be deleted; in those cases, deleting the VPC from the AWS console --
-make sure you delete the right VPC! -- and then re-trying to delete
-the stack has worked.)
+   Refresh the page until the stack no longer appears in the table, which might take 10 
+   minutes or so.
