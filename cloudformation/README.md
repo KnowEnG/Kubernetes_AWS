@@ -8,7 +8,7 @@ for [Creating a Key Pair Using Amazon EC2](https://docs.aws.amazon.com/AWSEC2/la
 Note you must select the region before creating the key pair; you can do that with the
 dropdown menu that appears near the top-right corner of the screen.
 
-   ![Dropdown to change region](https://github.com/KnowEnG/Kubernetes_AWS/raw/master/img/1-change_region.png)
+   ![Dropdown to change region](https://github.com/KnowEnG/Kubernetes_AWS/raw/master/cloudformation/img/1-change_region.png)
 
 
 2. Launch the KnowEnG Platform's CloudFormation Template by clicking [here](https://console.aws.amazon.com/cloudformation/home?region=us-west-1#/stacks/new?stackName=KnowEnG-Platform&templateURL=https://s3.amazonaws.com/knowscripts/knoweng-platform-simple.template).
@@ -18,7 +18,7 @@ You will then configure the template in a series of screens:
       near the top-right corner of the screen so that it matches the region of your 
       key pair from step 1. Then press the `Next` button.
 
-      ![Dropdown to change region](https://github.com/KnowEnG/Kubernetes_AWS/raw/master/img/2a-change_region_and_next.png)
+      ![Dropdown to change region](https://github.com/KnowEnG/Kubernetes_AWS/raw/master/cloudformation/img/2a-change_region_and_next.png)
 
    2. On the second screen, set the following options:
 
@@ -64,11 +64,11 @@ You will then configure the template in a series of screens:
    1. In the AWS Console, open the `Services` dropdown near the top-left corner and select `EC2`
       from the `Compute` section.
       
-      ![Dropdown to select EC2](https://github.com/KnowEnG/Kubernetes_AWS/raw/master/img/3a-open_ec2.png)
+      ![Dropdown to select EC2](https://github.com/KnowEnG/Kubernetes_AWS/raw/master/cloudformation/img/3a-open_ec2.png)
 
    2. Click on `Running Instances`.
    
-      ![Link to Running Instances](https://github.com/KnowEnG/Kubernetes_AWS/raw/master/img/3b-open_running_instances.png)
+      ![Link to Running Instances](https://github.com/KnowEnG/Kubernetes_AWS/raw/master/cloudformation/img/3b-open_running_instances.png)
       
    3. In the table of running instances, find the row with a `Name` of `bastion-host`. (If you have
       multiple instances with that name due to earlier deployments, choose the one whose `Launch Time` 
@@ -77,7 +77,7 @@ You will then configure the template in a series of screens:
       instance details at the bottom of the screen. From the instance details, make a note of the 
       `IPv4 Public IP`.
    
-      ![Details for bastion-host](https://github.com/KnowEnG/Kubernetes_AWS/raw/master/img/3c-get_bastion_details.png)
+      ![Details for bastion-host](https://github.com/KnowEnG/Kubernetes_AWS/raw/master/cloudformation/img/3c-get_bastion_details.png)
 
    4. Deselect the row for `bastion-host` by clicking it again. Now find the row with a `Name` of
       `k8s-master`. (Once again, if you have multiple instances with that name, choose the one whose 
@@ -85,14 +85,14 @@ You will then configure the template in a series of screens:
       the instance details at the bottom of the screen. From the instance details, make a note of the
       `Security Groups` (there will only be one), the `Private IPs` (there will only be one), and the `VPC ID`.
 
-      ![Details for k8s-master](https://github.com/KnowEnG/Kubernetes_AWS/raw/master/img/3d-get_master_details.png)
+      ![Details for k8s-master](https://github.com/KnowEnG/Kubernetes_AWS/raw/master/cloudformation/img/3d-get_master_details.png)
     
 4. Create storage for the KnowEnG Platform.
 
    1. In the AWS Console, open the `Services` dropdown near the top-left corner and select `EFS`
       from the `Storage` section.
       
-      ![Dropdown to select EFS](https://github.com/KnowEnG/Kubernetes_AWS/raw/master/img/4a-open_efs.png)
+      ![Dropdown to select EFS](https://github.com/KnowEnG/Kubernetes_AWS/raw/master/cloudformation/img/4a-open_efs.png)
 
    2. Press the `Create file system` button.
    
@@ -107,17 +107,17 @@ You will then configure the template in a series of screens:
       each option; i.e., just match the `SG name` portion to the value from step 3.iv. Security group 
       names can be very similar to one another, so check carefully.) Press the `Next Step` button.
    
-      ![First form to configure EFS](https://github.com/KnowEnG/Kubernetes_AWS/raw/master/img/4c-configure_efs.png)
+      ![First form to configure EFS](https://github.com/KnowEnG/Kubernetes_AWS/raw/master/cloudformation/img/4c-configure_efs.png)
 
    4. On the second form, give a name to the new file system (e.g., `knoweng-platform-cloudformation`).           This name is only to help you identify the file system in the AWS Console. After entering the name,         scroll to the bottom of the page, skipping the other fields, and press the `Next Step` button.
 
-      ![Second form to name EFS](https://github.com/KnowEnG/Kubernetes_AWS/raw/master/img/4d-name_efs.png)
+      ![Second form to name EFS](https://github.com/KnowEnG/Kubernetes_AWS/raw/master/cloudformation/img/4d-name_efs.png)
 
    5. On the following page, review your selections and press the `Create File System` button. When you
       are redirected to a page with a success message, make a note of the `DNS name` of your new file  
       system.
 
-      ![EFS success page with DNS name](https://github.com/KnowEnG/Kubernetes_AWS/raw/master/img/4e-get_efs_dns.png)
+      ![EFS success page with DNS name](https://github.com/KnowEnG/Kubernetes_AWS/raw/master/cloudformation/img/4e-get_efs_dns.png)
 
 5. Complete deployment on the bastion virtual machine. These steps will be completed from the command
    line, not the AWS Console.
@@ -171,8 +171,8 @@ You will then configure the template in a series of screens:
        the following two commands:
    
        ```
-       wget https://raw.githubusercontent.com/KnowEng/Kubernetes_AWS/master/knowcfnscript3.sh
-       sh knowcfnscript3.sh
+       wget https://raw.githubusercontent.com/KnowEng/Kubernetes_AWS/master/cloudformation/knowcfnscript.sh
+       sh knowcfnscript.sh
        ```
    
        The script will take 40 minutes or so to complete. Upon successful completion, the 
