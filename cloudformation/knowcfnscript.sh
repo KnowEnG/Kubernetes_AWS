@@ -63,7 +63,7 @@ echo $divider_line
 sleep 2
 EFS_ID=$(echo "$EFS_DNS" | cut -f1 -d.)
 EFS_REGION=$(echo "$EFS_DNS" | cut -f3 -d.)
-curl -s https://raw.githubusercontent.com/KnowEng/Kubernetes_AWS/master/efs-provisioner.yaml | \
+curl -s https://raw.githubusercontent.com/KnowEng/Kubernetes_AWS/master/cloudformation/efs-provisioner.yaml | \
     sed -e "s/EFS_DNS/$EFS_DNS/" -e "s/EFS_ID/$EFS_ID/" -e "s/EFS_REGION/$EFS_REGION/" | \
     kubectl apply -f -
 if [ $? -eq 0 ]
@@ -97,7 +97,7 @@ echo $divider_line
 echo " PVCs - networks "
 echo $divider_line
 sleep 2
-kubectl apply -f https://raw.githubusercontent.com/KnowEng/Kubernetes_AWS/master/pvcs/networks.pvc.yaml
+kubectl apply -f https://raw.githubusercontent.com/KnowEng/Kubernetes_AWS/master/common/networks.pvc.yaml
 if [ $? -eq 0 ]
 	then
 	echo
@@ -113,7 +113,7 @@ echo $divider_line
 echo " PVCs - postgres "
 echo $divider_line
 sleep 2
-kubectl apply -f https://raw.githubusercontent.com/KnowEnG/Kubernetes_AWS/master/pvcs/postgres.pvc.yaml
+kubectl apply -f https://raw.githubusercontent.com/KnowEnG/Kubernetes_AWS/master/common/postgres.pvc.yaml
 if [ $? -eq 0 ]
 	then
 	echo
@@ -129,7 +129,7 @@ echo $divider_line
 echo " PVCs - redis"
 echo $divider_line
 sleep 2
-kubectl apply -f https://raw.githubusercontent.com/KnowEnG/Kubernetes_AWS/master/pvcs/redis.pvc.yaml
+kubectl apply -f https://raw.githubusercontent.com/KnowEnG/Kubernetes_AWS/master/common/redis.pvc.yaml
 if [ $? -eq 0 ]
 	then
 	echo
@@ -145,7 +145,7 @@ echo $divider_line
 echo " PVCs - userfiles "
 echo $divider_line
 sleep 2
-kubectl apply -f https://raw.githubusercontent.com/KnowEnG/Kubernetes_AWS/master/pvcs/userfiles.pvc.yaml
+kubectl apply -f https://raw.githubusercontent.com/KnowEnG/Kubernetes_AWS/master/common/userfiles.pvc.yaml
 if [ $? -eq 0 ]
 	then
 	echo
@@ -185,7 +185,7 @@ echo $divider_line
 echo " Pods RBAC "
 echo $divider_line
 sleep 2
-kubectl apply -f https://raw.githubusercontent.com/KnowEng/Kubernetes_AWS/master/nest.rbac.yaml
+kubectl apply -f https://raw.githubusercontent.com/KnowEng/Kubernetes_AWS/master/common/nest.rbac.yaml
 if [ $? -eq 0 ]
 	then
 	echo
@@ -201,7 +201,7 @@ echo $divider_line
 echo " Deploying KnowEnG pods "
 echo $divider_line
 sleep 2
-kubectl apply -f https://raw.githubusercontent.com/KnowEng/Kubernetes_AWS/master/nest.cfn.yaml
+kubectl apply -f https://raw.githubusercontent.com/KnowEng/Kubernetes_AWS/master/cloudformation/nest.cfn.yaml
 if [ $? -eq 0 ]
 	then
 	echo

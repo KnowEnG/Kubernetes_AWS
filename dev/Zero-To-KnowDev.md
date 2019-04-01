@@ -241,7 +241,7 @@
 
 19. Deploy the efs provisioner
 
-    `kubectl apply -f https://raw.githubusercontent.com/KnowEnG/Kubernetes_AWS/master/efs-provisioner-dev.yaml`
+    `kubectl apply -f https://raw.githubusercontent.com/KnowEnG/Kubernetes_AWS/master/dev/efs-provisioner-dev.yaml`
 
 20. Deploy the efs rbac:
 
@@ -255,13 +255,13 @@
 
     `cd efs/ → sudo rm -r efs-*`
 
-    `kubectl apply -f https://raw.githubusercontent.com/KnowEnG/Kubernetes_AWS/master/pvcs/networks.pvc.yaml`
+    `kubectl apply -f https://raw.githubusercontent.com/KnowEnG/Kubernetes_AWS/master/common/networks.pvc.yaml`
 
-    `kubectl apply -f https://raw.githubusercontent.com/KnowEnG/Kubernetes_AWS/master/pvcs/postgres.pvc.yaml`
+    `kubectl apply -f https://raw.githubusercontent.com/KnowEnG/Kubernetes_AWS/master/common/postgres.pvc.yaml`
 
-    `kubectl apply -f https://raw.githubusercontent.com/KnowEnG/Kubernetes_AWS/master/pvcs/redis.pvc.yaml`
+    `kubectl apply -f https://raw.githubusercontent.com/KnowEnG/Kubernetes_AWS/master/common/redis.pvc.yaml`
 
-    `kubectl apply -f https://raw.githubusercontent.com/KnowEnG/Kubernetes_AWS/master/pvcs/userfiles.pvc.yaml`
+    `kubectl apply -f https://raw.githubusercontent.com/KnowEnG/Kubernetes_AWS/master/common/userfiles.pvc.yaml`
 
 22. Seed the KnowEnG database with the options to present to the user in the UI for the submitting a new pipeline job (In the efs-access instance and not KOPS instance)
 
@@ -344,13 +344,13 @@
 
     \# Create **Ingress Object** & **TLS Ingress Rule**:
 
-    `kubectl apply -f https://raw.githubusercontent.com/KnowEnG/Kubernetes_AWS/master/knowengressdev.yaml`
+    `kubectl apply -f https://raw.githubusercontent.com/KnowEnG/Kubernetes_AWS/master/dev/knowengressdev.yaml`
 
 27. Deploy KnowEnG Platform (after efs-network files copying is complete):
 
-    `kubectl apply -f https://raw.githubusercontent.com/KnowEnG/Kubernetes_AWS/master/nest.dev.yaml`
+    `kubectl apply -f https://raw.githubusercontent.com/KnowEnG/Kubernetes_AWS/master/dev/nest.dev.yaml`
 
-    `kubectl apply -f https://raw.githubusercontent.com/KnowEnG/Kubernetes_AWS/master/nest.rbac.yaml`
+    `kubectl apply -f https://raw.githubusercontent.com/KnowEnG/Kubernetes_AWS/master/common/nest.rbac.yaml`
 
 28. Stop KnowDevKOPS until further use and detach/modify security group for no ssh access
 
