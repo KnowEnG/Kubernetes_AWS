@@ -53,11 +53,12 @@ You will then configure the template in a series of screens:
       each of the checkboxes. Finally, press the `Create` button.
   
       After pressing the `Create` button, you will see a table of CloudFormation stacks.
-      One stack in the table will have the name you set in step 2.ii.a.; that is the stack
-      you just created. (You will also see a second stack appear with a similar name. 
-      The second stack will be labeled `NESTED` and is created automatically as part of
-      the KnowEnG Platform deployment process.) Refresh the table until the status for your new stack is
-      `CREATE_COMPLETE`. This might take 10 minutes or so.
+      Refresh the page, and you will see that one stack in the table has the name you set 
+      in step 2.ii.a.; that is the stack you just created. (If you continue to refresh, you will 
+      eventually see a second stack appear with a similar name.  The second stack will be labeled 
+      `NESTED` and is created automatically as part of the KnowEnG Platform deployment process.) 
+      Refresh the table until the status for your new stack is `CREATE_COMPLETE`. This might take 
+      10 minutes or so.
 
 3. Gather details from new stack. These details will be needed in later steps.
 
@@ -160,27 +161,29 @@ You will then configure the template in a series of screens:
       where `{MASTER_PRIVATE_IP}` is the address you found in step 3.iv and `{keypair}` is
       the name of your key pair file that you copied to the `/home/ubuntu/.ssh/` directory in step 5.i.
 
-    4. In your SSH session on `bastion-host`, run the following command, where `{EFS_DNS_NAME}`
-       is the name from step 4.v.
+   4. In your SSH session on `bastion-host`, run the following command, where `{EFS_DNS_NAME}`
+      is the name from step 4.v.
 
-       ```
-       export EFS_DNS={EFS_DNS_NAME}
-       ```
+      ```
+      export EFS_DNS={EFS_DNS_NAME}
+      ```
 
-    5. Initialize the KnowEnG Platform. In your SSH session on `bastion-host`, run 
-       the following two commands:
+   5. Initialize the KnowEnG Platform. In your SSH session on `bastion-host`, run 
+      the following two commands:
    
-       ```
-       wget https://raw.githubusercontent.com/KnowEng/Kubernetes_AWS/master/cloudformation/knowcfnscript.sh
-       sh knowcfnscript.sh
-       ```
+      ```
+      wget https://raw.githubusercontent.com/KnowEng/Kubernetes_AWS/master/cloudformation/knowcfnscript.sh
+      sh knowcfnscript.sh
+      ```
    
-       The script will take 40 minutes or so to complete. Upon successful completion, the 
-       script will print a URL to open in your web browser.
+      The script will take 40 minutes or so to complete. Upon successful completion, the 
+      script will print a URL to open in your web browser.
+
+      ![Success message with URL](https://github.com/KnowEnG/Kubernetes_AWS/raw/master/cloudformation/img/5e-get_url.png)
    
-    6. Open the KnowEnG Platform interface. In the web browser on your local machine, open 
-       the URL printed at the end of step 5.v. Sign in with username `fakeuser` and password
-       `GARBAGESECRET`.
+   6. Open the KnowEnG Platform interface. In the web browser on your local machine, open 
+      the URL printed at the end of step 5.v. Sign in with username `fakeuser` and password
+      `GARBAGESECRET`.
 
 # Deleting a KnowEnG Platform Deployment
 
@@ -188,8 +191,12 @@ You will then configure the template in a series of screens:
 
 2. In the AWS Console, open the `Services` dropdown near the top-left corner and select `EFS`
    from the `Storage` section. In the table of file systems, select the one you created in step 4.
-   Press the `Actions` button above the table and select `Delete file system`. Follow the on-screen     
+   Press the `Actions` button above the table and select `Delete file system`. Follow the on-screen  
    instructions to confirm and complete the deletion.
+
+   ![Dropdown to select EFS](https://github.com/KnowEnG/Kubernetes_AWS/raw/master/cloudformation/img/d2a-open_efs.png)
+
+   ![Dropdown to delete EFS](https://github.com/KnowEnG/Kubernetes_AWS/raw/master/cloudformation/img/d2b-delete_efs.png)
 
 3. In the AWS Console, open the `Services` dropdown near the top-left corner and select
    `CloudFormation` from the `Management & Governance` section. In the table of stacks, 
@@ -200,3 +207,7 @@ You will then configure the template in a series of screens:
    complete the deletion. You will see the stack's status change to `DELETE_IN_PROGRESS`.
    Refresh the page until the stack no longer appears in the table, which might take 10 
    minutes or so.
+
+   ![Dropdown to select CloudFormation](https://github.com/KnowEnG/Kubernetes_AWS/raw/master/cloudformation/img/d3a-open_cfn.png)
+
+   ![Dropdown to delete stack](https://github.com/KnowEnG/Kubernetes_AWS/raw/master/cloudformation/img/d3b-delete_stack.png)
