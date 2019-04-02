@@ -190,24 +190,28 @@ You will then configure the template in a series of screens:
 1. In your SSH session on `bastion-host`, run `ssh master` and then `kubectl delete svc nest-public-lb`.
 
 2. In the AWS Console, open the `Services` dropdown near the top-left corner and select `EFS`
-   from the `Storage` section. In the table of file systems, select the one you created in step 4.
-   Press the `Actions` button above the table and select `Delete file system`. Follow the on-screen  
-   instructions to confirm and complete the deletion.
+   from the `Storage` section.
 
    ![Dropdown to select EFS](https://github.com/KnowEnG/Kubernetes_AWS/raw/master/cloudformation/img/d2a-open_efs.png)
+
+   In the table of file systems, select the one you created in step 4.
+   Press the `Actions` button above the table and select `Delete file system`. Follow the on-screen
+   instructions to confirm and complete the deletion.
 
    ![Dropdown to delete EFS](https://github.com/KnowEnG/Kubernetes_AWS/raw/master/cloudformation/img/d2b-delete_efs.png)
 
 3. In the AWS Console, open the `Services` dropdown near the top-left corner and select
-   `CloudFormation` from the `Management & Governance` section. In the table of stacks, 
-   find and select the one you created in step 2. (Note there will be a similarly-named stack labeled 
-   `NESTED`. Do not delete the `NESTED` stack. It will be deleted automatically when you
-   delete the stack you created in step 2.) Press the `Actions` button above the table
-   and select `Delete Stack`. Follow the on-screen instructions to confirm and 
-   complete the deletion. You will see the stack's status change to `DELETE_IN_PROGRESS`.
-   Refresh the page until the stack no longer appears in the table, which might take 10 
-   minutes or so.
+   `CloudFormation` from the `Management & Governance` section. 
 
    ![Dropdown to select CloudFormation](https://github.com/KnowEnG/Kubernetes_AWS/raw/master/cloudformation/img/d3a-open_cfn.png)
+   
+   In the table of stacks,
+   find and select the one you created in step 2. (Note there will be a similarly-named stack labeled
+   `NESTED`. Do not delete the `NESTED` stack. It will be deleted automatically when you
+   delete the stack you created in step 2.) Press the `Actions` button above the table
+   and select `Delete Stack`. Follow the on-screen instructions to confirm and
+   complete the deletion. You will see the stack's status change to `DELETE_IN_PROGRESS`.
+   Refresh the page until the stack no longer appears in the table, which might take 10
+   minutes or so.
 
    ![Dropdown to delete stack](https://github.com/KnowEnG/Kubernetes_AWS/raw/master/cloudformation/img/d3b-delete_stack.png)
