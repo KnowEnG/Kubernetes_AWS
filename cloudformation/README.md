@@ -194,7 +194,7 @@ You will then configure the template in a series of screens:
 
    ![Dropdown to select EFS](https://github.com/KnowEnG/Kubernetes_AWS/raw/master/cloudformation/img/d2a-open_efs.png)
 
-   In the table of file systems, select the one you created in step 4.
+   In the table of file systems, select the one you created in step 4 of the deployment procedure.
    Press the `Actions` button above the table and select `Delete file system`. Follow the on-screen
    instructions to confirm and complete the deletion.
 
@@ -206,9 +206,10 @@ You will then configure the template in a series of screens:
    ![Dropdown to select CloudFormation](https://github.com/KnowEnG/Kubernetes_AWS/raw/master/cloudformation/img/d3a-open_cfn.png)
    
    In the table of stacks,
-   find and select the one you created in step 2. (Note there will be a similarly-named stack labeled
-   `NESTED`. Do not delete the `NESTED` stack. It will be deleted automatically when you
-   delete the stack you created in step 2.) Press the `Actions` button above the table
+   find and select the one you created in step 2 of the deployment procedure. (Note there 
+   will be a similarly-named stack labeled `NESTED`. Do not delete the `NESTED` stack. 
+   It will be deleted automatically when you delete the stack you created in step 2
+   of the deployment procedure.) Press the `Actions` button above the table
    and select `Delete Stack`. Follow the on-screen instructions to confirm and
    complete the deletion. You will see the stack's status change to `DELETE_IN_PROGRESS`.
    Refresh the page until the stack no longer appears in the table, which might take 10
