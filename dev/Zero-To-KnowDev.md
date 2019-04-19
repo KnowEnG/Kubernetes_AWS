@@ -237,7 +237,12 @@
 
 19. Deploy the efs provisioner
 
-    `kubectl apply -f https://raw.githubusercontent.com/KnowEnG/Kubernetes_AWS/master/dev/efs-provisioner-dev.yaml`
+    `wget https://raw.githubusercontent.com/KnowEnG/Kubernetes_AWS/master/dev/efs-provisioner-dev.yaml`
+    
+    Edit the file, setting file.system.id, aws.region, server. 
+    
+    `kubectl apply -f efs-provisioner-dev.yaml`
+    
 
 20. Deploy the efs rbac:
 
