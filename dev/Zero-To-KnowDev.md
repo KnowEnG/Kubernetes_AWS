@@ -52,9 +52,7 @@
 7. Install the **AWS CLI** tools:
 
     <pre>
-    sudo apt install python3-pip -y && \
-      pip3 install --upgrade pip && \
-      pip install awscli --upgrade --user
+    sudo apt install awscli
     </pre>
 
 8. Cluster State storage - create a dedicated S3 bucket for kops to use:
@@ -78,13 +76,11 @@
 <a name="step-11"></a>
 11. Set up a few environment variables for the cluster "KnowDev":
 
-    <pre>
     export NAME=knowdev.k8s.local && \
       export KOPS_STATE_STORE=s3://knowdevkops-state-store && \
       export REGION=`curl -s http://169.254.169.254/latest/dynamic/instance-identity/document|grep region|awk -F\" '{print $4}'` && \
       export ZONES=$(aws ec2 describe-availability-zones --region $REGION | grep ZoneName | awk '{print $2}' | tr -d '"') && \
-      export ZONES=$(echo $ZONES | tr -d " " | rev | cut -c 2- | rev)
-    </pre>
+      export ZONES=$(echo $ZONES | sed -e "s/\s/,/g")
 
 12. Create the cluster:
 
