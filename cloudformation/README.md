@@ -182,8 +182,8 @@ You will then configure the template in a series of screens:
       ![Success message with URL](https://github.com/KnowEnG/Kubernetes_AWS/raw/master/cloudformation/img/5e-get_url.png)
    
    6. Open the KnowEnG Platform interface. In the web browser on your local machine, open 
-      the URL printed at the end of step 5.v. Sign in with username `fakeuser` and password
-      `GARBAGESECRET`.
+      the URL printed at the end of step 5.v. Sign in with username `knowenguser` and password
+      `KNOWENGUSER1234`.
 
 # Deleting a KnowEnG Platform Deployment
 
