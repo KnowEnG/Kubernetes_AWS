@@ -372,6 +372,8 @@ The new security group "knowdevweb" opening up web ports to "node" should be det
 
 Note: This may take a while. Verify via Console/CLI that the KnowDev master(s), node(s), pipes1(s), and pipes2(s) are terminated.
 
+Delete the s3 bucket created as a state store.
+
 Optionally, delete the EFS and terminate the KnowDevKOPS VM.
 
 Finally, remove A record for "dev.knoweng.org" in the IPAM manager, so that UIUC owned domain doesn't point to an arbitrary machine.
