@@ -358,11 +358,9 @@
 
 ## DANGER ZONE! To Clean the Resources:
 
-Make sure the efs is detached from all the security groups and make sure efs doesn't belong to any VPC anymore.
+Make sure the efs is detached from all the security groups and make sure efs doesn't belong to any VPC anymore. If you created a knowdev-efs-access VM and didn't delete it above, terminate that VM by following the instructions in the knowdev-efs-access section.
 
-Also the new security group "knowdevweb" opening up web ports to "node" should be detached from node and deleted.
-
-Also, clean the resources associated with Dummy efs-access instance (see efs docs above and [the EC2 cleaning doc](Cleaning-EC2.md)).
+The new security group "knowdevweb" opening up web ports to "node" should be detached from node and deleted.
 
 `helm delete support --purge`
 
@@ -373,6 +371,8 @@ Also, clean the resources associated with Dummy efs-access instance (see efs doc
 `kops delete cluster $NAME --yes`
 
 Note: This may take a while. Verify via Console/CLI that the KnowDev master(s), node(s), pipes1(s), and pipes2(s) are terminated.
+
+Optionally, delete the EFS and terminate the KnowDevKOPS VM.
 
 Finally, remove A record for "dev.knoweng.org" in the IPAM manager, so that UIUC owned domain doesn't point to an arbitrary machine.
 
