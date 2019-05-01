@@ -15,10 +15,10 @@ metadata:
 spec:
   tls:
   - hosts:
-    - dev.knoweng.org
-    secretName: knowdevssl-secret
+    - SERVER_DNS_NAME
+    secretName: knowssl-secret
   rules:
-  - host: dev.knoweng.org
+  - host: SERVER_DNS_NAME
     http:
       # Define all paths served by our app to generate an nginx configuration
       paths:
@@ -105,6 +105,9 @@ spec:
         # postgres_i
       - image: postgres:9.6.2
         name: postgres
+        resources:
+          requests:
+            memory: "250Mi"
         env:
         - name: PGDATA
           value: "/data/db/postgres"
@@ -125,6 +128,9 @@ spec:
         command: [ "bash" ]
         args: [ "-c", "while ! nc -z localhost 5432; do echo 'Waiting for postgres...'; sleep 10s; done && sleep 20s && ./entrypoint.sh" ]
         name: flask
+        resources:
+          requests:
+            memory: "1400Mi"
         ports:
         - containerPort: 80
           protocol: TCP
@@ -147,13 +153,12 @@ spec:
         - name: AWS_SHARED_MNT_PATH
           value: "/userfiles"
         # To activate CILOGON:
-        #   1. Change CILOGON_ENABLED value to "True'
+        #   1. Change CILOGON_ENABLED value to "True"
         #   2. Add CILOGON_CLIENT_ID value
         #   3. Add CILOGON_CLIENT_SECRET value
-        #   4. Update CILOGON_REDIRECT_URI value (if necessary)
-        #      These values should work:
-        #      For dev: "https://dev.knoweng.org/static/index.html"
-        #      For prod: "https://platform.knoweng.org/static/index.html"
+        #   4. Set SEED_DATABASE to "False" (assuming seeding finished previously)
+        # As long as you deployed with the install-knoweng.sh script,
+        # the value of CILOGON_REDIRECT_URI will be correct.
         - name: CILOGON_ENABLED
           value: "False"
         - name: CILOGON_CLIENT_ID
@@ -161,7 +166,7 @@ spec:
         - name: CILOGON_CLIENT_SECRET
           value: "**********"
         - name: CILOGON_REDIRECT_URI
-          value: "https://dev.knoweng.org/static/index.html"
+          value: "https://SERVER_DNS_NAME/static/index.html"
         volumeMounts:
         - name: userfiles
           mountPath: "/userfiles"
@@ -169,6 +174,9 @@ spec:
         # redis_i
       - image: redis:3.0.3
         name: redis
+        resources:
+          requests:
+            memory: "10Mi"
         ports:
         - containerPort: 6379
           protocol: TCP
@@ -183,6 +191,9 @@ spec:
         command: [ "bash" ]
         args: [ "-c", "while ! nc -z localhost 80; do echo 'Waiting for flask...'; sleep 10s; done && sleep 10s && python -m nest_py.knoweng.jobs.worker_app" ]
         name: jobs
+        resources:
+          requests:
+            memory: "5120Mi"
         #securityContext:
           #runAsUser: 0   # DOCKER_UID
           #fsGroup: 999   # DOCKER_GID
@@ -205,7 +216,7 @@ spec:
         - name: AWS_REDIS_PASS
           value: "KnowEnG"
         - name: SEED_DATABASE
-          value: "false"
+          value: "true"
         - name: NODE_LABEL_NAME
           value: "pipelines_jobs"                 
         - name: NODE_LABEL_VALUE
