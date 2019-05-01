@@ -35,7 +35,7 @@
 
    `wget https://raw.githubusercontent.com/KnowEnG/Kubernetes_AWS/master/dev/install-knoweng.sh`
 
-   `./install-knoweng.sh`
+   `sh install-knoweng.sh`
 
    The script will prompt for input and then run for several minutes.
 
@@ -51,7 +51,7 @@ On KnowDevKOPS, run the following:
 
    `wget https://raw.githubusercontent.com/KnowEnG/Kubernetes_AWS/master/dev/uninstall-knoweng.sh`
 
-   `./uninstall-knoweng.sh`
+   `sh uninstall-knoweng.sh`
 
 This may take a while.
 
