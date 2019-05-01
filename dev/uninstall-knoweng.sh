@@ -5,7 +5,7 @@ EFS_REGION=$(echo "$EFS_DNS" | cut -f3 -d.)
 
 EFS_MOUNT_TARGETS=$(aws efs describe-mount-targets --file-system-id $EFS_ID --region $EFS_REGION --query "MountTargets[*].MountTargetId" --output text)
 for EFS_MOUNT_TARGET in $EFS_MOUNT_TARGETS ; do
-  aws efs delete-mount-target --mount-target-id $line --region $EFS_REGION
+  aws efs delete-mount-target --mount-target-id $EFS_MOUNT_TARGET --region $EFS_REGION
 done
 
 aws efs delete-file-system --file-system-id $EFS_ID --region $EFS_REGION
@@ -54,5 +54,5 @@ aws s3api delete-objects \
 aws s3api delete-bucket --bucket $STATESTORE --region us-east-1
 
 echo "
-Done. Refer to the readme file for additional instructions.
+Done. Refer to the README for additional instructions.
 "
