@@ -63,7 +63,7 @@ echo $divider_line
 sleep 2
 EFS_ID=$(echo "$EFS_DNS" | cut -f1 -d.)
 EFS_REGION=$(echo "$EFS_DNS" | cut -f3 -d.)
-curl -s https://raw.githubusercontent.com/KnowEng/Kubernetes_AWS/master/cloudformation/efs-provisioner.yaml | \
+curl -s https://raw.githubusercontent.com/KnowEng/Kubernetes_AWS/master/common/efs-provisioner.yaml | \
     sed -e "s/EFS_DNS/$EFS_DNS/" -e "s/EFS_ID/$EFS_ID/" -e "s/EFS_REGION/$EFS_REGION/" | \
     kubectl apply -f -
 if [ $? -eq 0 ]
@@ -126,22 +126,6 @@ else
 fi
 
 echo $divider_line
-echo " PVCs - redis"
-echo $divider_line
-sleep 2
-kubectl apply -f https://raw.githubusercontent.com/KnowEnG/Kubernetes_AWS/master/common/redis.pvc.yaml
-if [ $? -eq 0 ]
-	then
-	echo
-	echo " Success-- redis pvc created "
-	sleep 2
-	echo
-else
-	echo $exit_msg
-	exit
-fi
-
-echo $divider_line
 echo " PVCs - userfiles "
 echo $divider_line
 sleep 2
@@ -161,7 +145,7 @@ echo $divider_line
 echo " Seeding KnowNet | Takes about 5-10 minutes "
 echo $divider_line
 sleep 2
-ssh -T master "sudo mkdir efs"
+ssh -T master "mkdir efs"
 sleep 2
 ssh -T master "sudo mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport $EFS_DNS:/ efs"
 sleep 4
@@ -169,7 +153,7 @@ PVC_NAME=$(kubectl get pvc efs-networks -o jsonpath='{.spec.volumeName}')
 KNOW_NET_DIR="efs/efs-networks-${PVC_NAME}/"
 sleep 2
 echo "KNOW_NET_DIR: $KNOW_NET_DIR"
-ssh -T master "sudo aws s3 cp --recursive s3://KnowNets/KN-20rep-1706/userKN-20rep-1706/ ${KNOW_NET_DIR}"
+ssh -T master "aws s3 cp --quiet s3://KnowNets/KN-20rep-1706/userKN-20rep-1706.tgz - | sudo tar -xzC ${KNOW_NET_DIR} --strip 1"
 if [ $? -eq 0 ]
 	then
 	echo
