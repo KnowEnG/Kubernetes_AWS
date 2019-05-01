@@ -29,13 +29,13 @@ aws ec2 modify-instance-attribute --instance-id $HAS_DNS_EC2_ID --region $HAS_DN
 aws ec2 delete-security-group --group-id $PUBLIC_WEB_SG_ID --region $HAS_DNS_EC2_REGION
 
 helm delete support --purge
-
-# FIXME will we be using this namespace?
 kubectl delete namespace support
 
 STATESTORE=$(kops get cluster -oyaml | grep configBase | sed -e "s/^.*\/\///" -e "s/\/.*$//")
 
-kops delete cluster $NAME --yes
+kops delete cluster $CLUSTER_NAME --yes
+
+rm -rf $HOME/.kops
 
 aws s3api delete-objects \
   --bucket $STATESTORE \

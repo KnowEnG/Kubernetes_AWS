@@ -42,7 +42,7 @@ if [ $? -eq 0 ]
     exit
 fi
 
-sudo apt-get -qq install awscli
+sudo apt-get update && sudo apt-get -qq install awscli
 if [ $? -eq 0 ]
   then
     echo "awscli installed"
@@ -83,8 +83,17 @@ if [ $? -eq 0 ]
     exit
 fi
 
+# write the state store to a config file so the uninstaller can run kops, too
+mkdir $HOME/.kops && echo "kops_state_store: s3://$STATESTORE" > $HOME/.kops/config
+if [ $? -eq 0 ]
+  then
+    echo "kops state store configured"
+  else
+    echo "kops state store configuration failed; exiting"
+    exit
+fi
+
 export NAME=knowdev.k8s.local
-export KOPS_STATE_STORE=s3://$STATESTORE
 export REGION=`curl -s http://169.254.169.254/latest/dynamic/instance-identity/document|grep region|awk -F\" '{print $4}'`
 export ZONES=$(aws ec2 describe-availability-zones --region $REGION | grep ZoneName | awk '{print $2}' | tr -d '"' | xargs | tr " " ",")
 
@@ -119,7 +128,7 @@ fi
 
 kops validate cluster
 while [ $? -ne 0 ]; do
-  echo "checking cluster again in 15 seconds (expected total time ~4 min)"
+  echo "checking cluster again in 15 seconds (expect ~4 min for this step)"
   sleep 15s
   kops validate cluster
 done
@@ -197,6 +206,12 @@ if [ $? -eq 0 ]
 fi
 
 EFS_ID=$(echo $EFS_CREATION_DATA | sed -e "s/^.*FileSystemId\": \"//" -e "s/\".*$//")
+
+while [ "available" != $(aws efs describe-file-systems --file-system-id $EFS_ID --region $REGION --query "FileSystems[0].LifeCycleState" --output text) ]; do
+  echo "checking EFS again in 15 seconds (expect ~3 min for this step)"
+  sleep 15s
+done
+echo "EFS ready"
 
 # NOTE: newer versions of awscli can set tags while creating the EFS
 aws efs create-tags --file-system-id $EFS_ID --tags Key=Name,Value=EFS-for-${SERVER_DNS_NAME}-$(date +%F) --region $REGION
@@ -310,7 +325,7 @@ sudo apt install -qq unzip && \
   cd kubeadm-bootstrap/support && \
   helm dependency build && \
   cd .. && \
-  helm install --name=support --namespace=default support/ && \
+  helm install --name=support --namespace=support support/ && \
   cd ..
 if [ $? -eq 0 ]
   then

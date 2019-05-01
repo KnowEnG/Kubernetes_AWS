@@ -21,8 +21,6 @@
 
    `ssh -i <ssh-key>.pem ubuntu@{ip/fqdn}`
 
-   `sudo apt update && sudo apt upgrade -y`
-
 3. Prepare the SSL certificate and key. If the certificate and key already exist, copy them
    to the EC2 instance. If the certificate and key don't already exist, you can create a
    self-signed certificate by modifying and running the following command on the EC2 instance:
