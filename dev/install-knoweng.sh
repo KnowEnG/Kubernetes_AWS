@@ -321,20 +321,9 @@ if [ $? -eq 0 ]
 fi
 
 # PRAMOD SAYS: Store the keys in encrypted S3 bucket and automate the transfer via S3 CLI
-kubectl create secret tls knowssl-secret --key $SSL_KEY_PATH --cert $SSL_CRT_PATH && \
-  curl -sSL https://raw.githubusercontent.com/KnowEnG/Kubernetes_AWS/master/dev/knowengres.yaml | \
-  sed -e "s/SERVER_DNS_NAME/$SERVER_DNS_NAME/" | \
-  kubectl apply -f -
-if [ $? -eq 0 ]
-  then
-    echo "ingress created"
-  else
-    echo "ingress creation failed; exiting"
-    exit
-fi
-
 # note: leaving nest.dev.yaml on disk here so it can be edited and reapplied as needed
-curl -sSL https://raw.githubusercontent.com/KnowEnG/Kubernetes_AWS/master/dev/nest.dev.yaml | \
+kubectl create secret tls knowssl-secret --key $SSL_KEY_PATH --cert $SSL_CRT_PATH && \
+  curl -sSL https://raw.githubusercontent.com/KnowEnG/Kubernetes_AWS/master/dev/nest.dev.yaml | \
   sed -e "s/SERVER_DNS_NAME/$SERVER_DNS_NAME/" > nest.dev.yaml && \
   kubectl apply -f nest.dev.yaml && \
   kubectl apply -f https://raw.githubusercontent.com/KnowEnG/Kubernetes_AWS/master/common/nest.rbac.yaml
