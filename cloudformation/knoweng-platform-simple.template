@@ -313,6 +313,7 @@ Resources:
   BastionHost:
     Type: AWS::EC2::Instance
     Properties:
+      IamInstanceProfile: !Ref BastionInstanceProfile
       ImageId:
         Fn::FindInMap:
         - RegionMap
@@ -348,6 +349,49 @@ Resources:
             pip install --upgrade pip &> /dev/null
 
             ./$BASTION_BOOTSTRAP_FILE --banner https://s3.amazonaws.com/knowscripts/knoweng_banner_message.txt --enable true
+
+  # IAM role for the bastion node http://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html
+  BastionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - ec2.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: "/"
+      # IAM policy for the bastion node that allows specific AWS resource listing and creation
+      # http://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies.html
+      Policies:
+      - PolicyName: master
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - ec2:DescribeSecurityGroups
+            - ec2:DescribeInstances
+            - ec2:DescribeSubnets
+            - ec2:DescribeNetworkInterfaces
+            - ec2:CreateNetworkInterface
+            - elasticfilesystem:CreateFileSystem
+            - elasticfilesystem:DescribeFileSystems
+            - elasticfilesystem:CreateTags
+            - elasticfilesystem:CreateMountTarget
+            - elasticfilesystem:DescribeMountTargets
+            Resource: "*"
+
+  # Bind the BastionRole to a profile for the VM instance.
+  BastionInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Path: "/"
+      Roles:
+      - !Ref BastionRole
 
   # Open up port 22 for SSH for the bastion host
   BastionSecurityGroup:

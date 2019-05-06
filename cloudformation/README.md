@@ -60,7 +60,7 @@ You will then configure the template in a series of screens:
       Refresh the table until the status for your new stack is `CREATE_COMPLETE`. This might take 
       10 minutes or so.
 
-3. Gather details from new stack. These details will be needed in later steps.
+3. Find the bastion IP address from new stack. This IP address will be needed in later steps.
 
    1. In the AWS Console, open the `Services` dropdown near the top-left corner and select `EC2`
       from the `Compute` section.
@@ -80,47 +80,7 @@ You will then configure the template in a series of screens:
    
       ![Details for bastion-host](https://github.com/KnowEnG/Kubernetes_AWS/raw/master/cloudformation/img/3c-get_bastion_details.png)
 
-   4. Deselect the row for `bastion-host` by clicking it again. Now find the row with a `Name` of
-      `k8s-master`. (Once again, if you have multiple instances with that name, choose the one whose 
-      `Launch Time` matches the time you ran step 2.) Click on the `k8s-master` row in the table to display 
-      the instance details at the bottom of the screen. From the instance details, make a note of the
-      `Security Groups` (there will only be one), the `Private IPs` (there will only be one), and the `VPC ID`.
-
-      ![Details for k8s-master](https://github.com/KnowEnG/Kubernetes_AWS/raw/master/cloudformation/img/3d-get_master_details.png)
-    
-4. Create storage for the KnowEnG Platform.
-
-   1. In the AWS Console, open the `Services` dropdown near the top-left corner and select `EFS`
-      from the `Storage` section.
-      
-      ![Dropdown to select EFS](https://github.com/KnowEnG/Kubernetes_AWS/raw/master/cloudformation/img/4a-open_efs.png)
-
-   2. Press the `Create file system` button.
-   
-   3. On the first form, change the value of the **VPC** field so that it matches the `VPC ID` you
-      captured in step 3.iv. (Note that each option for **VPC** will be of the form `{VPC ID} - {VPC name}`.
-      You can ignore the `VPC name` portion of each option; i.e., just match the `VPC ID` portion from
-      step 3.iv.) Then find the `Security groups` column in the table below, where you will see a value
-      has already been entered. Click the `x` icon near the top-right corner of that pre-entered value to
-      remove it. Then click in the now-empty field to add a new security group. From the list of options
-      displayed, select the one that matches the value you found in `Security Groups` in step 3.iv. (Note 
-      that each option will be of the form `{SG ID} - {SG name}`. You can ignore the `SG ID` portion of 
-      each option; i.e., just match the `SG name` portion to the value from step 3.iv. Security group 
-      names can be very similar to one another, so check carefully.) Press the `Next Step` button.
-   
-      ![First form to configure EFS](https://github.com/KnowEnG/Kubernetes_AWS/raw/master/cloudformation/img/4c-configure_efs.png)
-
-   4. On the second form, give a name to the new file system (e.g., `knoweng-platform-cloudformation`).           This name is only to help you identify the file system in the AWS Console. After entering the name,         scroll to the bottom of the page, skipping the other fields, and press the `Next Step` button.
-
-      ![Second form to name EFS](https://github.com/KnowEnG/Kubernetes_AWS/raw/master/cloudformation/img/4d-name_efs.png)
-
-   5. On the following page, review your selections and press the `Create File System` button. When you
-      are redirected to a page with a success message, make a note of the `DNS name` of your new file  
-      system.
-
-      ![EFS success page with DNS name](https://github.com/KnowEnG/Kubernetes_AWS/raw/master/cloudformation/img/4e-get_efs_dns.png)
-
-5. Complete deployment on the bastion virtual machine. These steps will be completed from the command
+4. Complete deployment on the bastion virtual machine. These steps will be completed from the command
    line, not the AWS Console.
 
    1. Copy your key pair file from step 1 to `bastion-host`. If your local machine has
@@ -145,30 +105,7 @@ You will then configure the template in a series of screens:
       where `{path/to/keypair}` is the local path to your key pair file, and `{BASTION_PUBLIC_IP}`
       is the address found in step 3.iii.
   
-   3. In your SSH session on `bastion-host`, edit /home/ubuntu/.ssh/config to include the following block:
-
-      ```
-      Host master
-          HostName {MASTER_PRIVATE_IP}
-          Port 22
-          User ubuntu
-          IdentityFile /home/ubuntu/.ssh/{keypair}
-          StrictHostKeyChecking no
-          UserKnownHostsFile /dev/null
-          ServerAliveInterval 60
-      ```
-   
-      where `{MASTER_PRIVATE_IP}` is the address you found in step 3.iv and `{keypair}` is
-      the name of your key pair file that you copied to the `/home/ubuntu/.ssh/` directory in step 5.i.
-
-   4. In your SSH session on `bastion-host`, run the following command, where `{EFS_DNS_NAME}`
-      is the name from step 4.v.
-
-      ```
-      export EFS_DNS={EFS_DNS_NAME}
-      ```
-
-   5. Initialize the KnowEnG Platform. In your SSH session on `bastion-host`, run 
+   3. Initialize the KnowEnG Platform. In your SSH session on `bastion-host`, run 
       the following two commands:
    
       ```
@@ -181,22 +118,22 @@ You will then configure the template in a series of screens:
 
       ![Success message with URL](https://github.com/KnowEnG/Kubernetes_AWS/raw/master/cloudformation/img/5e-get_url.png)
    
-   6. Open the KnowEnG Platform interface. In the web browser on your local machine, open 
-      the URL printed at the end of step 5.v. Sign in with username `knowenguser` and password
+   4. Open the KnowEnG Platform interface. In the web browser on your local machine, open 
+      the URL printed at the end of step 5.iii. Sign in with username `knowenguser` and password
       `KNOWENGUSER1234`.
 
 # Deleting a KnowEnG Platform Deployment
 
-1. In your SSH session on `bastion-host`, run `ssh master` and then `kubectl delete svc nest-public-lb`.
+1. In your SSH session on `bastion-host`, run `kubectl delete svc nest-public-lb`.
 
 2. In the AWS Console, open the `Services` dropdown near the top-left corner and select `EFS`
    from the `Storage` section.
 
    ![Dropdown to select EFS](https://github.com/KnowEnG/Kubernetes_AWS/raw/master/cloudformation/img/d2a-open_efs.png)
 
-   In the table of file systems, select the one you created in step 4 of the deployment procedure.
-   Press the `Actions` button above the table and select `Delete file system`. Follow the on-screen
-   instructions to confirm and complete the deletion.
+   In the table of file systems, select the one whose name matches the stack name you selected in
+   step 2.ii of the deployment procedure. Press the `Actions` button above the table and 
+   select `Delete file system`. Follow the on-screen instructions to confirm and complete the deletion.
 
    ![Dropdown to delete EFS](https://github.com/KnowEnG/Kubernetes_AWS/raw/master/cloudformation/img/d2b-delete_efs.png)
 
