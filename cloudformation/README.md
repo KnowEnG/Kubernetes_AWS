@@ -119,7 +119,7 @@ You will then configure the template in a series of screens:
       ![Success message with URL](https://github.com/KnowEnG/Kubernetes_AWS/raw/master/cloudformation/img/5e-get_url.png)
    
    4. Open the KnowEnG Platform interface. In the web browser on your local machine, open 
-      the URL printed at the end of step 5.iii. Sign in with username `knowenguser` and password
+      the URL printed at the end of step 4.iii. Sign in with username `knowenguser` and password
       `KNOWENGUSER1234`.
 
 # Deleting a KnowEnG Platform Deployment
@@ -132,7 +132,7 @@ You will then configure the template in a series of screens:
    ![Dropdown to select EFS](https://github.com/KnowEnG/Kubernetes_AWS/raw/master/cloudformation/img/d2a-open_efs.png)
 
    In the table of file systems, select the one whose name matches the stack name you selected in
-   step 2.ii of the deployment procedure. Press the `Actions` button above the table and 
+   step 2.ii.a of the deployment procedure. Press the `Actions` button above the table and 
    select `Delete file system`. Follow the on-screen instructions to confirm and complete the deletion.
 
    ![Dropdown to delete EFS](https://github.com/KnowEnG/Kubernetes_AWS/raw/master/cloudformation/img/d2b-delete_efs.png)
