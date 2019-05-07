@@ -306,7 +306,12 @@ ssh -T master "mkdir efs"
 sleep 2
 ssh -T master "sudo mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport $EFS_DNS:/ efs"
 sleep 4
-PVC_NAME=$(kubectl get pvc efs-networks -o jsonpath='{.spec.volumeName}')
+PVC_NAME=''
+while [ -z "$PVC_NAME" ]; do
+  PVC_NAME=$(kubectl get pvc efs-networks -o jsonpath='{.spec.volumeName}')
+  echo "waiting for PVC (expect < 1 min for this step)"
+  sleep 5s
+done
 KNOW_NET_DIR="efs/efs-networks-${PVC_NAME}/"
 sleep 2
 echo "copying knowledge network to $KNOW_NET_DIR"
