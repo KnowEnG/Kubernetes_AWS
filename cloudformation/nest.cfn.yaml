@@ -1,8 +1,12 @@
 # This template describes the KnowEnG production stack, 
 # which will mount in and operate on data from AWS EFS
 
-# Ingress rules assign a hostname/path to expose particular ports to the public internet
+# Ingress rules assign a hostname/path to expose particular ports to the public
+# internet
 # NOTE: "Host" header must match in order to be routed
+# NOTE: Ingress not used in current cloudformation deployment (instead, 
+# knowcfnscript.sh exposes a LoadBalancer), but this configuration is
+# nonetheless up to date with the ../dev alternative, which does use Ingress
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -10,6 +14,8 @@ metadata:
     # Force users to redirect from HTTP to HTTPS
     ingress.kubernetes.io/ssl-redirect: "true"
     ingress.kubernetes.io/force-ssl-redirect: "true"
+    ingress.kubernetes.io/proxy-body-size: "500m"
+    nginx.ingress.kubernetes.io/proxy-body-size: "500m"
   name: nest-ingress
 spec:
   tls:
@@ -151,6 +157,8 @@ spec:
           value: "KnowEnG"
         - name: AWS_SHARED_MNT_PATH
           value: "/userfiles"
+        - name: JWT_SECRET
+          value: "GARBAGESECRET"
         volumeMounts:
         - name: userfiles
           mountPath: "/userfiles"
@@ -205,6 +213,8 @@ spec:
           value: "pipelines_jobs"                 
         - name: NODE_LABEL_VALUE
           value: "true"
+        - name: JWT_SECRET
+          value: "GARBAGESECRET"
         volumeMounts:
         - name: userfiles
           mountPath: "/userfiles"
