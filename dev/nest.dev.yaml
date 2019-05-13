@@ -10,6 +10,8 @@ metadata:
     # Force users to redirect from HTTP to HTTPS
     ingress.kubernetes.io/ssl-redirect: "true"
     ingress.kubernetes.io/force-ssl-redirect: "true"
+    ingress.kubernetes.io/proxy-body-size: "500m"
+    nginx.ingress.kubernetes.io/proxy-body-size: "500m"
   name: nest-ingress
   namespace: default
 spec:
@@ -152,6 +154,10 @@ spec:
           value: "KnowEnG"
         - name: AWS_SHARED_MNT_PATH
           value: "/userfiles"
+        - name: JWT_SECRET
+          value: "GARBAGESECRET"
+        - name: GOOGLE_ANALYTICS_ID
+          value: "UA-XXXXX-Y"
         # To activate CILOGON:
         #   1. Change CILOGON_ENABLED value to "True"
         #   2. Add CILOGON_CLIENT_ID value
@@ -221,6 +227,8 @@ spec:
           value: "pipelines_jobs"                 
         - name: NODE_LABEL_VALUE
           value: "true"
+        - name: JWT_SECRET
+          value: "GARBAGESECRET"
         volumeMounts:
         - name: userfiles
           mountPath: "/userfiles"
