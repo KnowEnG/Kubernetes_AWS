@@ -7,7 +7,7 @@
 
 ### Steps
 
-1. Create an EC2 instance from the Ubuntu 18 image with size t2.micro. Add IAM Role KnowKubeKOPS. Add Name tag with value KnowDevKOPS. Make sure the security group allows ssh access from your IP.
+1. Create an EC2 instance from the Ubuntu 18 image with size t3.micro. Add IAM Role KnowKubeKOPS. Add Name tag with value KnowDevKOPS. Make sure the security group allows ssh access from your IP.
 
    Note: If you need to recreate the KnowKubeKOPS role, it should have the following permissions:
 
