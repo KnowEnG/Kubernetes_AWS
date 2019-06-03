@@ -277,7 +277,7 @@ done
 KNOW_NET_DIR="efs/efs-networks-${PVC_NAME}/"
 sleep 2
 echo "KNOW_NET_DIR: $KNOW_NET_DIR"
-ssh -T master "aws s3 cp --quiet s3://KnowNets/KN-20rep-1706/userKN-20rep-1706.tgz - | sudo tar -xzC ${KNOW_NET_DIR} --strip 1"
+ssh -T master "curl -sSL https://s3.amazonaws.com/KnowNets/KN-20rep-1706/userKN-20rep-1706.tgz | sudo tar -xzC ${KNOW_NET_DIR} --strip 1"
 if [ $? -eq 0 ]
 	then
 	echo
