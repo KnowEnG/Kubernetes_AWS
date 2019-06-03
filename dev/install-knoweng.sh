@@ -110,9 +110,9 @@ export ZONES=$(aws ec2 describe-availability-zones --region $REGION | grep ZoneN
 kops create cluster $NAME \
   --zones $ZONES \
   --authorization RBAC \
-  --master-size c4.large \
+  --master-size m5.large \
   --master-volume-size 100 \
-  --node-size c4.xlarge \
+  --node-size m5.xlarge \
   --node-volume-size 50 \
   --node-count 1 \
   --kubernetes-version $KUBERNETES_VERSION \
@@ -141,7 +141,7 @@ done
 # create an instance group consisting of one node, always on
 kops create ig pipes1 --dry-run -oyaml | \
   sed \
-    -e "s/machineType: t2.medium/machineType: c4.xlarge/" \
+    -e "s/machineType: t2.medium/machineType: m5.xlarge/" \
     -e "s/maxSize: 2/maxSize: 1/" \
     -e "s/minSize: 2/minSize: 1/" \
     -e "s/nodeLabels:/nodeLabels:\n    pipelines_jobs: \"true\"/" | \
@@ -157,8 +157,8 @@ fi
 # create an autoscaling instance group of 0-5 nodes
 kops create ig pipes2 --dry-run -oyaml | \
   sed \
-    -e "s/machineType: t2.medium/machineType: c4.8xlarge/" \
-    -e "s/maxSize: 2/maxSize: 5/" \
+    -e "s/machineType: t2.medium/machineType: m5.4xlarge/" \
+    -e "s/maxSize: 2/maxSize: 10/" \
     -e "s/minSize: 2/minSize: 0/" \
     -e "s/nodeLabels:/nodeLabels:\n    pipelines_jobs: \"true\"/" \
     -e "s/role: Node/role: Node\n  taints:\n  - dedicated=pipelines_jobs:NoSchedule/" | \
@@ -183,7 +183,7 @@ fi
 
 # apply the autoscaler
 curl -sSL https://raw.githubusercontent.com/kubernetes/autoscaler/cluster-autoscaler-$CLUSTER_AUTOSCALER_VERSION/cluster-autoscaler/cloudprovider/aws/examples/cluster-autoscaler-one-asg.yaml | \
-  sed -e "s/nodes=1:10:k8s-worker-asg-1/nodes=0:5:pipes2.$NAME\n          env:\n            - name: AWS_REGION\n              value: $REGION/" | \
+  sed -e "s/nodes=1:10:k8s-worker-asg-1/nodes=0:10:pipes2.$NAME\n          env:\n            - name: AWS_REGION\n              value: $REGION/" | \
   kubectl apply -f -
 if [ $? -eq 0 ]
   then
