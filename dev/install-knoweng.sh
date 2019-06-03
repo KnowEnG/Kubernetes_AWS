@@ -315,7 +315,7 @@ done
 KNOW_NET_DIR="efs/efs-networks-${PVC_NAME}/"
 sleep 2
 echo "copying knowledge network to $KNOW_NET_DIR"
-ssh -T master "aws s3 cp --quiet s3://KnowNets/KN-20rep-1706/userKN-20rep-1706.tgz - | sudo tar -xzC ${KNOW_NET_DIR} --strip 1"
+ssh -T master "curl -sSL https://s3.amazonaws.com/KnowNets/KN-20rep-1706/userKN-20rep-1706.tgz | sudo tar -xzC ${KNOW_NET_DIR} --strip 1"
 
 # install helm
 curl https://storage.googleapis.com/kubernetes-helm/helm-v2.8.0-linux-amd64.tar.gz | tar xvz && \
