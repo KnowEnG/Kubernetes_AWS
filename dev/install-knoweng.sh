@@ -6,7 +6,7 @@ read -p 'DNS name of server (must match cert): ' SERVER_DNS_NAME
 # IF CHANGING VERSIONS, YOU MIGHT ALSO NEED TO CHANGE CONFIG PASSED TO KOPS AND KUBECTL
 
 # note: version in August was 1.10.0
-KOPS_VERSION=1.11.1
+KOPS_VERSION=1.12.1
 
 # note: version in August was 1.11.2
 KUBERNETES_VERSION=1.11.9
